@@ -6,7 +6,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WordSense</title>
     <style>
-        /* ... [All the styles you had previously, unchanged] ... */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #2e353d;
+            color: #61dafb;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            border: 2px solid #61dafb;
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #61dafb;
+            border: none;
+            border-radius: 8px;
+            color: #2e353d;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #4fa8d4;
+        }
+
+        #results {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            background-color: #39424e;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #definition {
+            margin-top: 20px;
+            font-weight: 600;
+            color: #FFFFFF;
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .uncommon {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        #notifyButton {
+            margin-left: 10px;
+        }
     </style>
 </head>
 
@@ -137,7 +195,6 @@
             const words = transcript.split(" ").slice(-30);
             return words.filter(word => definedWords.has(word.toLowerCase()));
         }
-
     </script>
 </body>
 
