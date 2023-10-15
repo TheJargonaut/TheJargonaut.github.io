@@ -81,6 +81,7 @@
         let recognition;
         let isRecording = false;
         let definedWords = new Set();
+        let wordBuffer = [];
 
         function toggleRecording() {
             if (isRecording) {
@@ -98,32 +99,36 @@
             recognition.interimResults = false;
             recognition.continuous = true;
 
-            recognition.onresult = function(event) {
+            recognition.onresult = async function(event) {
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
-                        const finalizedWords = event.results[i][0].transcript.split(" ");
-                        for (const word of finalizedWords) {
-                            const cleanWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "");
-                            if (!definedWords.has(cleanWord.toLowerCase())) {
-                                setTimeout(async () => {
-                                    if (await isUncommon(cleanWord)) {
-                                        fetchDefinition(cleanWord);
-                                        document.getElementById("results").innerHTML += `<span class="uncommon">${word}</span> `;
-                                    } else {
-                                        document.getElementById("results").innerHTML += word + " ";
-                                    }
-                                }, 1000);
-                                definedWords.add(cleanWord.toLowerCase());
-                            } else {
-                                document.getElementById("results").innerHTML += word + " ";
-                            }
-                        }
+                        const finalizedWords = event.results[i][0].transcript.trim().split(" ");
+                        wordBuffer = wordBuffer.concat(finalizedWords);
+                        processBufferedWords();
                     }
                 }
             };
 
             recognition.start();
             document.getElementById("notifyButton").disabled = false;
+        }
+
+        async function processBufferedWords() {
+            while(wordBuffer.length) {
+                const word = wordBuffer.shift();
+                const cleanWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "");
+                if (!definedWords.has(cleanWord.toLowerCase())) {
+                    if (await isUncommon(cleanWord)) {
+                        fetchDefinition(cleanWord);
+                        document.getElementById("results").innerHTML += `<span class="uncommon">${word}</span> `;
+                    } else {
+                        document.getElementById("results").innerHTML += word + " ";
+                    }
+                    definedWords.add(cleanWord.toLowerCase());
+                } else {
+                    document.getElementById("results").innerHTML += word + " ";
+                }
+            }
         }
 
         async function isUncommon(word) {
@@ -143,15 +148,6 @@
                 let response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
                 let data = await response.json();
                 let definition = data[0]?.meanings[0]?.definitions[0]?.definition;
-
-                if (!definition) {
-                    const rootWord = word.replace(/(ingly|edly|ly|ing|ed|er|est)$/, "");
-                    response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${rootWord}`);
-                    data = await response.json();
-                    definition = data[0]?.meanings[0]?.definitions[0]?.definition;
-                    word = rootWord;
-                }
-
                 if (definition && definition.toLowerCase().includes(word)) {
                     definition = data[0]?.meanings[0]?.definitions[1]?.definition || "Definition not found";
                 }
@@ -192,7 +188,7 @@
 
         function getLastWords() {
             const transcript = document.getElementById("results").textContent;
-            const words = transcript.split(" ").slice(-30);
+            const words = transcript.split(" ").slice(-10);
             return words.filter(word => definedWords.has(word.toLowerCase()));
         }
     </script>
