@@ -98,7 +98,6 @@
             recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.interimResults = false;
             recognition.continuous = true;
-
             recognition.onresult = async function(event) {
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
@@ -174,15 +173,17 @@
         }
 
         function notifyUserWithDefinitions() {
-            const lastWords = getLastWords();
-            lastWords.forEach(word => {
+            const uncommonWords = [...document.querySelectorAll('.uncommon')].map(el => el.textContent.trim());
+            uncommonWords.forEach(word => {
                 const definition = [...document.querySelectorAll('#definition li')]
                     .find(li => li.textContent.toLowerCase().startsWith(word.toLowerCase() + ':'))
                     ?.textContent.split(': ')[1] || '';
                 
-                new Notification(word.charAt(0).toUpperCase() + word.slice(1), {
-                    body: definition
-                });
+                if(definition) // Only notify if there's a definition.
+                    new Notification(word.charAt(0).toUpperCase() + word.slice(1), {
+                        body: definition
+                    });
+                }
             });
         }
 
@@ -193,5 +194,7 @@
         }
     </script>
 </body>
-
 </html>
+
+
+           
