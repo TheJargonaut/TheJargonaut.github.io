@@ -83,8 +83,7 @@
         } else if (Notification.permission === "granted") {
             // If it's okay, let's create a notification
         } else if (Notification.permission !== "denied") {
-            Notification.requestPermission
-               .then(function(permission) {
+            Notification.requestPermission().then(function(permission) {
                 if (permission === "granted") {
                     // Permission granted
                 }
@@ -172,7 +171,7 @@
                 }
                 if (definition) {
                     const li = document.createElement("li");
-                                        li.innerHTML = `<strong>${word.charAt(0).toUpperCase() + word.slice(1)}</strong>: ${definition}`;
+                    li.innerHTML = `<strong>${word.charAt(0).toUpperCase() + word.slice(1)}</strong>: ${definition}`;
                     document.getElementById("definition").appendChild(li);
                 }
             } catch (error) {
@@ -196,5 +195,5 @@
         }
     </script>
 </body>
-</html>
 
+</html>
