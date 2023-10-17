@@ -78,24 +78,23 @@
     <ul id="definition"></ul>
 
     <script>
-        if (!('Notification' in window)) {
-            console.log('This browser does not support desktop notification');
-        } else if (Notification.permission === "granted") {
-            // If it's okay, let's create a notification
-        } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then(function(permission) {
-                if (permission === "granted") {
-                    // Permission granted
-                }
-            });
-        }
-
         let recognition;
         let isRecording = false;
         let definedWords = new Set();
         let wordBuffer = [];
 
-        function initializeRecognition() {
+        function toggleRecording() {
+            if (isRecording) {
+                recognition.stop();
+                document.getElementById("recordingButton").textContent = "🎙 Start Recording";
+            } else {
+                startListening();
+                document.getElementById("recordingButton").textContent = "🎙 Stop Recording";
+            }
+            isRecording = !isRecording;
+        }
+
+        function startListening() {
             recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.interimResults = false;
             recognition.continuous = true;
@@ -110,29 +109,12 @@
                 }
             };
 
-            recognition.onerror = function(event) {
-                console.error('Error occurred in recognition:', event.error);
-            };
-        }
-
-        function toggleRecording() {
-            if (!recognition) {
-                initializeRecognition();
-            }
-
-            if (isRecording) {
-                recognition.stop();
-                document.getElementById("recordingButton").textContent = "🎙 Start Recording";
-            } else {
-                recognition.start();
-                document.getElementById("recordingButton").textContent = "🎙 Stop Recording";
-            }
-
-            isRecording = !isRecording;
+            recognition.start();
+            document.getElementById("notifyButton").disabled = false;
         }
 
         async function processBufferedWords() {
-            while(wordBuffer.length) {
+            while (wordBuffer.length) {
                 const word = wordBuffer.shift();
                 const cleanWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "");
                 if (!definedWords.has(cleanWord.toLowerCase())) {
@@ -180,14 +162,26 @@
         }
 
         function sendNotification() {
-            const uncommonWordsElements = [...document.querySelectorAll('.uncommon')];
-            uncommonWordsElements.forEach(element => {
+            if (Notification.permission !== "granted") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        notifyUserWithDefinitions();
+                    }
+                });
+            } else {
+                notifyUserWithDefinitions();
+            }
+        }
+
+        function notifyUserWithDefinitions() {
+            const uncommonWords = [...document.querySelectorAll('.uncommon')];
+            uncommonWords.forEach(element => {
                 const word = element.textContent.trim();
                 const definitionElement = [...document.querySelectorAll('#definition li')]
                     .find(li => li.textContent.toLowerCase().startsWith(word.toLowerCase() + ':'));
                 if (definitionElement) {
                     const definition = definitionElement.textContent.split(': ')[1];
-                    new Notification(word, {
+                    new Notification(word.charAt(0).toUpperCase() + word.slice(1), {
                         body: definition
                     });
                 }
