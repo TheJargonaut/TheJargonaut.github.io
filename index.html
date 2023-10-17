@@ -83,21 +83,11 @@
         let definedWords = new Set();
         let wordBuffer = [];
 
-        function toggleRecording() {
-            if (isRecording) {
-                recognition.stop();
-                document.getElementById("recordingButton").textContent = "🎙 Start Recording";
-            } else {
-                startListening();
-                document.getElementById("recordingButton").textContent = "🎙 Stop Recording";
-            }
-            isRecording = !isRecording;
-        }
-
-        function startListening() {
+        function initializeRecognition() {
             recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.interimResults = false;
             recognition.continuous = true;
+
             recognition.onresult = async function(event) {
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
@@ -107,9 +97,25 @@
                     }
                 }
             };
+                    recognition.onerror = function(event) {
+                console.error('Error occurred in recognition:', event.error);
+            };
+        }
 
-            recognition.start();
-            document.getElementById("notifyButton").disabled = false;
+        function toggleRecording() {
+            if (!recognition) {
+                initializeRecognition();
+            }
+
+            if (isRecording) {
+                recognition.stop();
+                document.getElementById("recordingButton").textContent = "🎙 Start Recording";
+            } else {
+                recognition.start();
+                document.getElementById("recordingButton").textContent = "🎙 Stop Recording";
+            }
+
+            isRecording = !isRecording;
         }
 
         async function processBufferedWords() {
@@ -178,23 +184,18 @@
                 const definition = [...document.querySelectorAll('#definition li')]
                     .find(li => li.textContent.toLowerCase().startsWith(word.toLowerCase() + ':'))
                     ?.textContent.split(': ')[1] || '';
-                
-                if(definition) // Only notify if there's a definition.
-                    new Notification(word.charAt(0).toUpperCase() + word.slice(1), {
-                        body: definition
+
+                if(definition) {
+                    const notifTitle = word.charAt(0).toUpperCase() + word.slice(1);
+                    const notifBody = definition;
+                    new Notification(notifTitle, {
+                        body: notifBody
                     });
                 }
             });
-        }
-
-        function getLastWords() {
-            const transcript = document.getElementById("results").textContent;
-            const words = transcript.split(" ").slice(-10);
-            return words.filter(word => definedWords.has(word.toLowerCase()));
         }
     </script>
 </body>
 </html>
 
-
-           
+                
