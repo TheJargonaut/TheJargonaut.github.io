@@ -181,9 +181,11 @@
                     .find(li => li.textContent.toLowerCase().startsWith(word.toLowerCase() + ':'));
                 if (definitionElement) {
                     const definition = definitionElement.textContent.split(': ')[1];
-                    new Notification(word.charAt(0).toUpperCase() + word.slice(1), {
-                        body: definition
-                    });
+                    if (definition !== "Definition not found") {
+                        new Notification(word.charAt(0).toUpperCase() + word.slice(1), {
+                            body: definition
+                        });
+                    }
                 }
             });
         }
