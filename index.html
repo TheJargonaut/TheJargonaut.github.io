@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WordSense</title>
     <style>
-        /* Styles */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #2e353d;
@@ -17,11 +15,14 @@
             justify-content: center;
             height: 100vh;
         }
+
         h1 {
             font-size: 3rem;
             margin-bottom: 15px;
         }
+
         button {
+            margin: 10px;
             padding: 10px 20px;
             background-color: #61dafb;
             border: none;
@@ -29,18 +30,37 @@
             color: #2e353d;
             font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
+
+        button:hover {
+            background-color: #4fa8d4;
+        }
+
         #results {
-            display: none; /* initially hidden */
+            display: none;
             margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            background-color: #39424e;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
         #definition {
             margin-top: 20px;
+            font-weight: 600;
+            color: #FFFFFF;
+            list-style-type: none;
+            padding-left: 0;
         }
-        /* Add more styles for animations or additional features */
+
+        .uncommon {
+            color: #ffd700;
+            font-weight: bold;
+        }
     </style>
 </head>
-
 <body>
     <h1>WordSense</h1>
     <div>
