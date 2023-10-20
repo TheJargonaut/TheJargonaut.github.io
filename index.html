@@ -9,7 +9,7 @@
     <style>
         :root {
             --primary-color: #000000;
-            --secondary-color: #FFFFFF;
+            --secondary-color: ##005BD0;
             --bg-color: #121212;
             --text-color: #F1F1F1;
         }
@@ -78,14 +78,6 @@
             word-wrap: break-word;
         }
 
-                /* CSS */
-        .expanded {
-            width: 90%;
-            height: 300px;
-            overflow-y: auto;
-        }
-
-
         #definition {
             margin-top: 20px;
             font-weight: 600;
@@ -139,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function toggleTranscription() {
     const resultsDiv = document.getElementById('results');
     resultsDiv.classList.toggle('expanded');
-    resultsDiv.style.display = resultsDiv.style.display === 'none' ? 'block' : 'none';
+    resultsDiv.style.display = resultsDiv.style.display === 'none' ? 'rectangle' : 'none';
 }
 // Toggle recording
 function toggleRecording() {
@@ -267,13 +259,7 @@ function toggleRealTimeNotifications() {
     document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
 }
 
-// Toggle Transcription Display
-function toggleTranscription() {
-    const resultDiv = document.getElementById("results");
-    if (resultDiv.style.display === 'none' || resultDiv.style.display === '') {
-        resultDiv.style.display = 'block';
-    } else {
-        resultDiv.style.display = 'none';
+
     }
 }
 </script>
