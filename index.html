@@ -170,6 +170,16 @@ async function processBufferedWords() {
         }
     }
 }
+function stripToRootWord(word) {
+    const suffixes = ['ing', 'ed', 'ly', 'es', 's', 'ment']; // A list of common suffixes
+
+    for (let suffix of suffixes) {
+        if (word.endsWith(suffix)) {
+            return word.slice(0, word.length - suffix.length);
+        }
+    }
+    return word;
+}
 
 // Fetch definition
 async function fetchDefinition(word) {
