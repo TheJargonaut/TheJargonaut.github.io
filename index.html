@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WordSense - The Ultimate Vocabulary Experience</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --primary-color: #000000;
@@ -77,6 +78,14 @@
             word-wrap: break-word;
         }
 
+                /* CSS */
+        .expanded {
+            width: 90%;
+            height: 300px;
+            overflow-y: auto;
+        }
+
+
         #definition {
             margin-top: 20px;
             font-weight: 600;
@@ -126,7 +135,12 @@ document.addEventListener('DOMContentLoaded', function() {
         Notification.requestPermission();
     }
 });
-
+        
+function toggleTranscription() {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.classList.toggle('expanded');
+    resultsDiv.style.display = resultsDiv.style.display === 'none' ? 'block' : 'none';
+}
 // Toggle recording
 function toggleRecording() {
     if (isRecording) {
@@ -217,6 +231,8 @@ async function fetchDefinition(word) {
         return null;
     }
 }
+
+
 
 // Check if a word is uncommon
 async function isUncommon(word) {
