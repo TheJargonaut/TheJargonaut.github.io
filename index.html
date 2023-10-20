@@ -4,60 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WordSense</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS */
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #2e353d;
-            color: #61dafb;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-        button {
-            margin: 10px;
-            padding: 10px 20px;
-            background-color: #61dafb;
-            border: none;
-            border-radius: 8px;
-            color: #2e353d;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #4fa8d4;
-        }
-        #results {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            background-color: #39424e;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        #definition {
-            margin-top: 20px;
-            font-weight: 600;
-            color: #FFFFFF;
-            list-style-type: none;
-            padding-left: 0;
-        }
-        .uncommon {
-            color: #ffd700;
-            font-weight: bold;
-        }
+    font-family: 'San Francisco', Arial, sans-serif; /* San Francisco is Apple's font */
+    background-color: #f4f4f4; /* A sleek light gray background */
+    color: #333; /* Darker text for contrast */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    transition: all 0.3s ease; /* smoother transitions */
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #333; /* Dark button */
+    border: 2px solid transparent;
+    border-radius: 8px;
+    color: #fff; /* White text */
+    font-weight: 600; /* Bold */
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s; /* transitions for hover effects */
+}
+
+button:hover {
+    background-color: #555; /* Slightly lighter on hover */
+    border-color: #61dafb; /* Cyan border on hover */
+}
+
+#results {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    background-color: #e6e6e6; /* Light gray */
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1); /* subtle shadow */
+}
+
+#definition {
+    margin-top: 20px;
+    font-weight: 600;
+    color: #333;
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.uncommon {
+    color: #007aff; /* Blue to highlight uncommon words */
+    font-weight: bold;
+}
+
+/* Additional styling to add subtle hover animations */
+button:active {
+    transform: scale(0.98); /* Slight scale down on active */
+}
+
+/* Adding a subtle transition effect for all elements */
+* {
+    transition: all 0.3s ease-out;
+}
+
+/* Adding more styles for better visuals */
+#results span {
+    margin-right: 5px; /* Spacing between words for better readability */
+}
+
+#definition li {
+    margin-bottom: 10px; /* Spacing between definitions for better readability */
+}
+
+#definition li strong {
+    color: #007aff; /* Same blue for consistency */
+}
+
     </style>
 </head>
 <body>
-    <!-- HTML -->
     <h1>WordSense</h1>
     <div>
         <button id="recordingButton" onclick="toggleRecording()">🎙 Start Recording</button>
@@ -68,133 +100,156 @@
     <div id="results"></div>
     <ul id="definition"></ul>
 
-    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', initialize);
-
         let recognition;
         let isRecording = false;
         let realTimeNotify = false;
         let lastWordTimestamp = 0;
         let definedWords = new Set();
-        let wordBuffer = [];
+        let word
+Buffer = [];
 
-        async function initialize() {
-            if (Notification.permission !== 'granted') {
-                await Notification.requestPermission();
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+    }
+});
+
+// Toggle recording
+function toggleRecording() {
+    if (isRecording) {
+        recognition.stop();
+        document.getElementById("recordingButton").textContent = "🎙 Start Recording";
+    } else {
+        startListening();
+        document.getElementById("recordingButton").textContent = "🎙 Stop Recording";
+    }
+    isRecording = !isRecording;
+}
+
+// Start listening
+function startListening() {
+    recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.interimResults = false;
+    recognition.continuous = true;
+
+    recognition.onresult = async function(event) {
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+                const finalizedWords = event.results[i][0].transcript.trim().split(" ");
+                lastWordTimestamp = new Date().getTime();
+                wordBuffer = wordBuffer.concat(finalizedWords);
+                await processBufferedWords();
+            }
+        }
+    };
+
+    recognition.onend = () => {
+        document.getElementById('recordingButton').textContent = '🎙 Start Recording';
+    };
+
+    recognition.start();
+    document.getElementById("notifyButton").disabled = false;
+    document.getElementById("realTimeNotifyButton").disabled = false;
+}
+        async function getRootWord(word) {
+    try {
+        const response = await fetch(`https://api.datamuse.com/words?sp=${word}&md=d`);
+        const data = await response.json();
+
+        if (data && data.length) {
+            for (const item of data) {
+                if (item.defs && item.defs.length) {
+                    return item.word; // Return the word with a definition, which should be the base word
+                }
             }
         }
 
-        function toggleRecording() {
-            if (isRecording) {
-                recognition.stop();
-                document.getElementById("recordingButton").textContent = "🎙 Start Recording";
+        return word; // If no suitable word is found, return the original word
+    } catch (error) {
+        console.error('Error getting root word:', error);
+        return word; // In case of error, return the original word
+    }
+}
+// Process buffered words
+async function processBufferedWords() {
+    while (wordBuffer.length > 0) {
+        const word = wordBuffer.shift();
+        const cleanWord = await getRootWord(word.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, ""));
+
+        const isUncommonWord = await isUncommon(cleanWord);
+        if (isUncommonWord) {
+            const definition = await fetchDefinition(cleanWord);
+            if (definition) {
+                definedWords.add(cleanWord);
+                document.getElementById("results").innerHTML += `<span class="uncommon">${word}</span> `;
+                const li = document.createElement("li");
+                li.innerHTML = `<strong>${word}</strong>: ${definition}`;
+                document.getElementById("definition").appendChild(li);
+
+                if (realTimeNotify) {
+                    new Notification(word, { body: definition });
+                }
             } else {
-                startListening();
-                document.getElementById("recordingButton").textContent = "🎙 Stop Recording";
+                document.getElementById("results").innerHTML += word + " ";
             }
-            isRecording = !isRecording;
+        } else {
+            document.getElementById("results").innerHTML += word + " ";
         }
+    }
+}
+// Fetch definition
+async function fetchDefinition(word) {
+    try {
+        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${word}`);
+        const data = await response.json();
+        return data[0].meanings[0].definitions[0].definition;
+    } catch (error) {
+        return null;
+    }
+}
 
-        function startListening() {
-            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.interimResults = false;
-            recognition.continuous = true;
-            recognition.onresult = handleResult;
-            recognition.onend = () => {
-                document.getElementById('recordingButton').textContent = '🎙 Start Recording';
-            };
-            recognition.start();
-            setButtonStates(true);
-        }
+// Check if a word is uncommon
+async function isUncommon(word) {
+    try {
+        const response = await fetch(`https://api.datamuse.com/words?sp=${word}&md=f`);
+        const data = await response.json();
+        const frequency = data[0]?.tags ? parseFloat(data[0].tags[0].replace('f:', '')) : 1000;
+        return frequency < 4;
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
+    }
+}
 
-        async function handleResult(event) {
-            for (let i = event.resultIndex; i < event.results.length; ++i) {
-                if (event.results[i].isFinal) {
-                    const finalizedWords = event.results[i][0].transcript.trim().split(" ");
-                    lastWordTimestamp = Date.now();
-                    wordBuffer = wordBuffer.concat(finalizedWords);
-                    await processBufferedWords();
-                }
-            }
-        }
-
-        function setButtonStates(isEnabled) {
-            document.getElementById("notifyButton").disabled = !isEnabled;
-            document.getElementById("realTimeNotifyButton").disabled = !isEnabled;
-        }
-
-        async function processBufferedWords() {
-            while (wordBuffer.length > 0) {
-                const word = wordBuffer.shift();
-                const cleanWord = word.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "");
-                const isUncommonWord = await isUncommon(cleanWord);
-                if (isUncommonWord) {
-                    const definition = await fetchDefinition(cleanWord);
-                    if (definition) {
-                        definedWords.add(cleanWord);
-                        updateUI(cleanWord, definition);
-                    }
-                }
-            }
-        }
-
-        function updateUI(word, definition) {
-            document.getElementById("results").innerHTML += `<span class="uncommon">${word}</span> `;
-            const li = document.createElement("li");
-            li.innerHTML = `<strong>${word}</strong>: ${definition}`;
-            document.getElementById("definition").appendChild(li);
-            if (realTimeNotify) {
-                new Notification(word, { body: definition });
-            }
-        }
-
-        async function fetchDefinition(word) {
-            try {
-                const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${word}`);
-                const data = await response.json();
-                return data[0]?.meanings[0]?.definitions[0]?.definition || null;
-            } catch (error) {
-                console.error('Error:', error);
-                return null;
-            }
-        }
-
-        async function isUncommon(word) {
-            try {
-                const response = await fetch(`https://api.datamuse.com/words?sp=${word}&md=f`);
-                const data = await response.json();
-                const frequency = data[0]?.tags?.find(tag => tag.startsWith('f:'));
-                return frequency && parseFloat(frequency.slice(2)) < 20;
-            } catch (error) {
-                console.error('Error:', error);
-                return false;
-            }
-        }
-
-        function sendNotification() {
-            if (Notification.permission !== 'granted') {
-                alert('Notification permission not granted');
-                return;
-            }
-
-            definedWords.forEach(word => {
-                const definition = fetchDefinition(word);
+// Send notifications
+function sendNotification() {
+    const currentTime = new Date().getTime();
+    if (currentTime - lastWordTimestamp <= 10000) {
+        definedWords.forEach(word => {
+            fetchDefinition(word).then(definition => {
                 if (definition) {
                     new Notification(word, { body: definition });
                 }
             });
-        }
+        });
+    }
+}
 
-        function toggleTranscription() {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.style.display = resultsDiv.style.display === 'none' ? 'block' : 'none';
-        }
+// Toggle real-time notifications
+function toggleRealTimeNotifications() {
+    realTimeNotify = !realTimeNotify;
+    document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
+}
 
-        function toggleRealTimeNotifications() {
-            realTimeNotify = !realTimeNotify;
-            document.getElementById('realTimeNotifyButton').textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Real-time Notify';
-        }
-    </script>
-</body>
-</html>
+// Toggle Transcription Display
+function toggleTranscription() {
+    const resultDiv = document.getElementById("results");
+    if (resultDiv.style.display === 'none' || resultDiv.style.display === '') {
+        resultDiv.style.display = 'block';
+    } else {
+        resultDiv.style.display = 'none';
+    }
+}
+</script>
