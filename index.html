@@ -70,11 +70,12 @@
             margin-top: 20px;
             padding: 20px;
             border-radius: 10px;
-            width: 80%; /* increase this if you want it wider */
-            height: 60px; /* this will give it a block-like height */
+            width: 90%;    
+            height: 50px;   
+}
+
             background-color: #e6e6e6; /* Light gray */
             box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1); /* subtle shadow */
-            overflow-x: auto; /* this will allow horizontal scrolling if the content exceeds the width */
         }
 
 
@@ -130,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
 function toggleTranscription() {
     const resultsDiv = document.getElementById('results');
-    resultsDiv.classList.toggle('expanded');
     resultsDiv.style.display = resultsDiv.style.display === 'none' ? 'block' : 'none';
 }
 // Toggle recording
