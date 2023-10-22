@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WordSense - The Ultimate Vocabulary Experience</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    
     <style>
         :root {
             --primary-color: #000000;
@@ -14,7 +14,7 @@
             --bg-color: #121212;
             --text-color: #F1F1F1;
         }
-
+        
         body {
             font-family: 'Inter', sans-serif;
             color: var(--text-color);
@@ -30,7 +30,7 @@
             background-position: center;
             background-repeat: no-repeat;
         }
-
+        
         h1 {
             font-size: 4rem;
             margin-bottom: 30px;
@@ -39,7 +39,7 @@
             text-shadow: 0px 0px 20px var(--secondary-color);
             animation: glow 2s infinite alternate;
         }
-
+        
         button {
             margin: 10px;
             padding: 12px 25px;
@@ -54,17 +54,17 @@
             box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
             outline: none;
         }
-
+        
         button:hover {
             background-color: #005BD0;
             transform: scale(1.05);
             box-shadow: 0 12px 28px rgba(0, 122, 255, 0.5);
         }
-
+        
         button:active {
             transform: scale(1);
         }
-
+        
         #results {
             display: none;
             margin-top: 20px;
@@ -74,24 +74,24 @@
             background-color: #e6e6e6;
             box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
         }
-
+        
         #definition {
             margin-top: 20px;
             font-weight: 600;
             list-style-type: none;
             padding-left: 0;
         }
-
+        
         .uncommon {
             color: var(--secondary-color);
             font-weight: bold;
         }
-
+        
         @keyframes glow {
             from {
                 text-shadow: 0px 0px 10px var(--secondary-color);
             }
-
+            
             to {
                 text-shadow: 0px 0px 20px var(--secondary-color), 0px 0px 30px var(--secondary-color);
             }
@@ -111,7 +111,7 @@
     <ul id="definition"></ul>
 
     <script>
-        let recognition;
+          let recognition;
         let isRecording = false;
         let realTimeNotify = false;
         let lastWordTimestamp = 0;
@@ -259,9 +259,6 @@ function toggleRealTimeNotifications() {
     }
 }
 
-
     </script>
 </body>
-
 </html>
-
