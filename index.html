@@ -172,7 +172,7 @@ function startListening() {
 async function processBufferedWords() {
     while (wordBuffer.length > 0) {
         const word = wordBuffer.shift();
-        const rootWord = word.toLowerCase().replace(/ing$/i, ''); // Stripping "ing" for words like "emailing"
+        const rootWord = stripToRootWord(word);
         const cleanWord = rootWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "");
         if (!definedWords.has(cleanWord)) {
             const isUncommonWord = await isUncommon(cleanWord);
