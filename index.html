@@ -1,36 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WordSense - The Ultimate Vocabulary Experience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>WordSense</h1>
-    <div>
-        <button id="recordingButton" onclick="toggleRecording()">🎙 Start Recording</button>
-        <button id="notifyButton" onclick="sendNotification()" disabled>Notify</button>
-        <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
-        <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
-    </div>
-    <div id="results"></div>
-    <ul id="definition"></ul>
-
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+        });
+
         let recognition;
         let isRecording = false;
         let realTimeNotify = false;
         let lastWordTimestamp = 0;
         let definedWords = new Set();
         let wordBuffer = [];
-
-        document.addEventListener('DOMContentLoaded', function() {
-            if (Notification.permission !== "granted") {
-                Notification.requestPermission();
-            }
-        });
 
         function toggleTranscription() {
             const resultsDiv = document.getElementById('results');
@@ -53,7 +39,7 @@
             recognition.interimResults = false;
             recognition.continuous = true;
 
-            recognition.onresult = async function(event) {
+            recognition.onresult = async function (event) {
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
                         const finalizedWords = event.results[i][0].transcript.trim().split(" ");
@@ -73,23 +59,33 @@
             document.getElementById("realTimeNotifyButton").disabled = false;
         }
 
+        async function getRootWord(word) {
+            try {
+                const response = await fetch(`https://api.datamuse.com/words?sp=${word}&md=d`);
+                const data = await response.json();
+                return data[0]?.word || word;
+            } catch (error) {
+                return word;
+            }
+        }
+
         async function processBufferedWords() {
             while (wordBuffer.length > 0) {
                 const word = wordBuffer.shift();
-                const baseWord = await getBaseWord(word);
-                const cleanWord = baseWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "");
-                
+                const rootWord = await getRootWord(word);
+                const cleanWord = rootWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "");
+
                 if (!definedWords.has(cleanWord)) {
                     const definition = await fetchDefinition(cleanWord);
                     if (definition) {
                         definedWords.add(cleanWord);
-                        document.getElementById("results").innerHTML += `<span class="uncommon">${word}</span> `;
+                        document.getElementById("results").innerHTML += `<span class="uncommon">${rootWord}</span> `;
                         const li = document.createElement("li");
-                        li.innerHTML = `<strong>${word}</strong>: ${definition}`;
+                        li.innerHTML = `<strong>${rootWord}</strong>: ${definition}`;
                         document.getElementById("definition").appendChild(li);
 
                         if (realTimeNotify) {
-                            new Notification(word, { body: definition });
+                            new Notification(rootWord, { body: definition });
                         }
                     } else {
                         document.getElementById("results").innerHTML += word + " ";
@@ -107,16 +103,6 @@
                 return data[0].meanings[0].definitions[0].definition;
             } catch (error) {
                 return null;
-            }
-        }
-
-        async function getBaseWord(word) {
-            try {
-                const response = await fetch(`https://api.datamuse.com/words?sp=${word}&md=r`);
-                const data = await response.json();
-                return data[0]?.word || word;
-            } catch (error) {
-                return word;
             }
         }
 
@@ -138,5 +124,18 @@
             document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
         }
     </script>
+</head>
+
+<body>
+    <h1>WordSense</h1>
+    <div>
+        <button id="recordingButton" onclick="toggleRecording()">🎙 Start Recording</button>
+        <button id="notifyButton" onclick="sendNotification()" disabled>Notify</button>
+        <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
+        <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
+    </div>
+    <div id="results"></div>
+    <ul id="definition"></ul>
 </body>
+
 </html>
