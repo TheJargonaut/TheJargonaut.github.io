@@ -26,13 +26,13 @@ body {
 
 #results {
     width: 80vw; /* Increased width */
-    height: 40vh; /* Increased height */
+    height: 20vh; /* Increased height */
     background-color: transparent; /* Transparent background */
     color: var(--primary-color); /* Color of normal words */
     font-family: 'Fira Code', monospace;
     border: 2px solid var(--primary-color);
     border-radius: 8px;
-    padding: 10px;
+    padding: 40px;
     display: none;
 }
 
