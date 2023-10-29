@@ -27,6 +27,7 @@ body {
 #results {
     width: 90%;
     height: auto;
+    display: none;
     padding: 20px;
     margin: 20px auto;
     background-color: black;
