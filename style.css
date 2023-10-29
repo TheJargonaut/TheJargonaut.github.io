@@ -18,25 +18,27 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-image: url('hhttps://wallpaperaccess.com/full/5277927.jpg');
+    background-image: url('https://wallpaperaccess.com/full/5277927.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
 
 #results {
-    background-color: white;
-    color: green; /* normal words in green */
-    font-family: 'Courier New', Courier, monospace; /* coder font */
-    border: 2px solid green; /* green border */
-    border-radius: 8px; /* rounded corners */
-    padding: 10px; /* padding inside the box */
-    display: none; /* hide by default until "Show Transcription" is pressed */
+    width: 80vw; /* Increased width */
+    height: 40vh; /* Increased height */
+    background-color: transparent; /* Transparent background */
+    color: var(--primary-color); /* Color of normal words */
+    font-family: 'Fira Code', monospace;
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 10px;
+    display: none;
 }
 
 .uncommon {
-    color: green;
-    text-shadow: 0 0 5px green; /* glow effect for uncommon words */
+    color: var(--primary-color);
+    text-shadow: 0 0 5px var(--primary-color);
 }
 
 h1 {
@@ -46,8 +48,8 @@ h1 {
     border-right: .15em solid var(--primary-color);
     white-space: nowrap;
     overflow: hidden;
-    width: 9ch;
-    animation: typing 3s steps(9, end), blink-caret .75s step-end infinite;
+    width: 9ch; /* Adjusted the width for the typing effect */
+    animation: typing 3s steps(9, end), blink-caret .75s step-end infinite; /* Made the typing faster */
 }
 
 @keyframes typing {
@@ -63,7 +65,7 @@ h1 {
 button {
     opacity: 0;
     font-family: 'Fira Code', monospace;
-    animation: fadeIn 1s forwards 4.5s;
+    animation: fadeIn 1s forwards 3.5s;
     background-color: var(--primary-color);
     border: none;
     padding: 10px 20px;
@@ -79,5 +81,5 @@ button:hover {
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(1rem); }
-    to   { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: translate(0); }
 }
