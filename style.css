@@ -1,9 +1,8 @@
-/* Simplified CSS for green and black theme */
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
 
 :root {
-    --primary-color: #00FF00; /* Green */
-    --bg-color: #000000; /* Black */
+    --primary-color: #00FF00; 
+    --bg-color: #000000; 
 }
 
 body {
