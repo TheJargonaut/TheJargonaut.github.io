@@ -94,7 +94,7 @@
                 let word = wordBuffer.shift();
                 let cleanWord = stripPunctuation(word);
                 const lemmaWord = await fetchLemma(cleanWord); 
-                
+
                 if (!definedWords.has(lemmaWord)) {
                     const isUncommonWord = await isUncommon(lemmaWord); 
                     if (isUncommonWord) {
@@ -160,7 +160,6 @@
             realTimeNotify = !realTimeNotify;
             document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
         }
-
     </script>
 </body>
 </html>
