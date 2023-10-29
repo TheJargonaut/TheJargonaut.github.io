@@ -32,8 +32,7 @@ h1 {
     white-space: nowrap;
     overflow: hidden;
     width: 12ch;
-    animation: typing 4s steps(12, end),
-               blink-caret .75s step-end infinite;
+    animation: typing 4s steps(12, end), blink-caret .75s step-end infinite;
 }
 
 @keyframes typing {
@@ -48,6 +47,7 @@ h1 {
 
 button {
     opacity: 0;
+    font-family: 'Fira Code', monospace;
     animation: fadeIn 1s forwards 4.5s;
     background-color: var(--primary-color);
     border: none;
