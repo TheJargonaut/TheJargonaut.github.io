@@ -18,7 +18,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-image: url('https://raw.githubusercontent.com/DMills94/WordSense/main/IMG_4749.JPG');
+    background-image: url('hhttps://wallpaperaccess.com/full/5277927.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -32,7 +32,7 @@ h1 {
     white-space: nowrap;
     overflow: hidden;
     width: 12ch;
-    animation: typing 4s steps(12, end), blink-caret .75s step-end infinite;
+    animation: typing 3s steps(9, end), blink-caret .75s step-end infinite;
 }
 
 @keyframes typing {
