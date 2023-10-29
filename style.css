@@ -1,70 +1,75 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
 
 :root {
-    --primary-color: #00FF00; 
-    --bg-color: #000000; 
+    --primary-color: #00FF00; /* Neon Green */
+    --secondary-color: #FFFFFF; /* White */
+    --bg-color: #000000; /* Black */
+    --text-glow: #00FF00; /* Neon Green glow for text */
 }
 
 body {
     font-family: 'Fira Code', monospace;
     background-color: var(--bg-color);
     color: var(--primary-color);
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
     height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background: url('https://wallpaperaccess.com/full/5277927.jpg'); 
+    background-size: cover;
+    background-position: center;
 }
 
 h1 {
     font-size: 4rem;
     margin-bottom: 1rem;
     color: var(--primary-color);
-    text-shadow: 0 0 5px var(--primary-color);
+    text-shadow: 0 0 10px var(--text-glow);
+    animation: neonFlicker 1.5s infinite alternate;
 }
 
 button {
+    padding: 15px 25px;
     background-color: var(--primary-color);
     border: none;
+    border-radius: 5px;
     color: var(--bg-color);
-    padding: 10px 20px;
-    margin: 4px 2px;
+    font-size: 1.2rem;
     cursor: pointer;
-    font-size: 16px;
+    transition: transform 0.2s ease;
+    text-shadow: 0 0 5px var(--text-glow);
 }
 
-button:disabled {
-    opacity: 0.7;
+button:hover {
+    transform: scale(1.1);
+}
+
+button:active {
+    transform: scale(1);
 }
 
 #results {
-    word-wrap: break-word;
-    max-width: 80%;
-    padding: 10px;
-    margin-top: 20px;
+    width: 80%;
     border: 2px solid var(--primary-color);
-    border-radius: 5px;
-    text-align: left;
-    overflow-y: auto;
-    max-height: 200px;
-}
-
-#definition {
-    word-wrap: break-word;
-    max-width: 80%;
-    padding: 10px;
+    padding: 20px;
+    color: var(--primary-color);
+    background-color: rgba(0, 0, 0, 0.7); /* Slight transparency */
+    text-shadow: 0 0 5px var(--text-glow);
     margin-top: 20px;
-    border: 2px solid var(--primary-color);
-    border-radius: 5px;
-    text-align: left;
-    overflow-y: auto;
-    max-height: 200px;
 }
 
 .uncommon {
-    color: var(--primary-color);
-    font-weight: bold;
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px var(--text-glow), 0 0 15px var(--text-glow), 0 0 20px var(--primary-color);
+    animation: neonFlicker 1s infinite alternate;
+}
+
+@keyframes neonFlicker {
+    0% {
+        text-shadow: 0 0 5px var(--text-glow), 0 0 10px var(--text-glow);
+    }
+    100% {
+        text-shadow: 0 0 10px var(--text-glow), 0 0 20px var(--text-glow), 0 0 25px var(--primary-color), 0 0 30px var(--primary-color);
+    }
 }
