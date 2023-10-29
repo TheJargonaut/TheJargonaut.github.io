@@ -34,12 +34,12 @@
                 Notification.requestPermission();
             }
         });
-        
+
         function toggleTranscription() {
             const resultsDiv = document.getElementById('results');
             resultsDiv.style.display = resultsDiv.style.display === 'none' ? 'block' : 'none';
         }
-        
+
         function toggleRecording() {
             if (isRecording) {
                 recognition.stop();
@@ -53,17 +53,17 @@
 
         function startListening() {
             recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.interimResults = false;
+            recognition.interimResults = true;
             recognition.continuous = true;
 
             recognition.onresult = async function(event) {
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    const transcript = event.results[i][0].transcript.trim();
                     if (event.results[i].isFinal) {
-                        const finalizedWords = event.results[i][0].transcript.trim().split(" ");
                         lastWordTimestamp = new Date().getTime();
-                        wordBuffer = wordBuffer.concat(finalizedWords);
-                        await processBufferedWords();
                     }
+                    wordBuffer.push(transcript);
+                    await processBufferedWords();
                 }
             };
 
@@ -77,20 +77,23 @@
         }
 
         async function processBufferedWords() {
-            while (wordBuffer.length > 0) {
-                const word = wordBuffer.shift();
-                const rootWord = await fetchRootWord(word);
-                if (!definedWords.has(rootWord)) {
-                    const definition = await fetchDefinition(rootWord);
+            let currentBuffer = wordBuffer.join(" ");
+            wordBuffer = [];
+            const words = currentBuffer.split(" ");
+
+            for (const word of words) {
+                const lemma = await fetchLemma(word);
+                if (!definedWords.has(lemma)) {
+                    const definition = await fetchDefinition(lemma);
                     if (definition) {
-                        definedWords.add(rootWord);
+                        definedWords.add(lemma);
                         document.getElementById("results").innerHTML += `<span class="uncommon">${word}</span> `;
                         const li = document.createElement("li");
-                        li.innerHTML = `<strong>${rootWord}</strong>: ${definition}`;
+                        li.innerHTML = `<strong>${lemma}</strong>: ${definition}`;
                         document.getElementById("definition").appendChild(li);
 
                         if (realTimeNotify) {
-                            new Notification(rootWord, { body: definition });
+                            new Notification(lemma, { body: definition });
                         }
                     } else {
                         document.getElementById("results").innerHTML += word + " ";
@@ -101,11 +104,13 @@
             }
         }
 
-        async function fetchRootWord(word) {
+        async function fetchLemma(word) {
             try {
                 const response = await fetch(`https://api.datamuse.com/words?sp=${word}&md=r`);
                 const data = await response.json();
-                return data[0]?.word || word;
+                const tags = data[0]?.tags || [];
+                const lemma = tags.find(tag => tag.startsWith("f:"))?.substring(2) || word;
+                return lemma;
             } catch (error) {
                 console.error('Error:', error);
                 return word;
@@ -139,7 +144,6 @@
             realTimeNotify = !realTimeNotify;
             document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
         }
-
     </script>
 </body>
 </html>
