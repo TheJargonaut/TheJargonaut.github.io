@@ -48,7 +48,8 @@ body {
 
 .uncommon {
     color: var(--primary-color);
-    text-shadow: 0 0 5px var(--primary-color);
+    text-shadow: 0 0 8px var(--primary-color);
+    font-weight: bold;
 }
 
 h1 {
