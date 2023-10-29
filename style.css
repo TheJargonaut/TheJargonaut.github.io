@@ -24,6 +24,21 @@ body {
     background-repeat: no-repeat;
 }
 
+#results {
+    background-color: white;
+    color: green; /* normal words in green */
+    font-family: 'Courier New', Courier, monospace; /* coder font */
+    border: 2px solid green; /* green border */
+    border-radius: 8px; /* rounded corners */
+    padding: 10px; /* padding inside the box */
+    display: none; /* hide by default until "Show Transcription" is pressed */
+}
+
+.uncommon {
+    color: green;
+    text-shadow: 0 0 5px green; /* glow effect for uncommon words */
+}
+
 h1 {
     font-size: 4rem;
     margin-bottom: 1rem;
@@ -31,7 +46,7 @@ h1 {
     border-right: .15em solid var(--primary-color);
     white-space: nowrap;
     overflow: hidden;
-    width: 12ch;
+    width: 9ch;
     animation: typing 3s steps(9, end), blink-caret .75s step-end infinite;
 }
 
