@@ -25,17 +25,19 @@ body {
 }
 
 #results {
-    width: 350px; /* Approximated width from the image */
-    height: 100px; /* Approximated height from the image */
-    background-color: transparent;
-    color: var(--primary-color);
-    font-family: 'Fira Code', monospace;
-    border: 2px solid var(--primary-color);
-    border-radius: 50px; /* Rounded corners */
-    padding: 10px;
-    display: none;
-    opacity: 0; /* Set to invisible initially for the fade-in effect */
-    animation: fadeInBox 1s forwards; /* Fade in animation */
+    width: 90%;
+    height: auto;
+    padding: 20px;
+    margin: 20px auto;
+    background-color: black;
+    border: 1px solid #21f038; /* Neon coder green border */
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+#results:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 @keyframes fadeInBox {
