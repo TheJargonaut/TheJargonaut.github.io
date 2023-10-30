@@ -31,7 +31,7 @@ body {
     padding: 20px;
     margin: 20px auto;
     background-color: black;
-    border: 1px solid #21f038; /* Neon coder green border */
+    border: 1px solid #21f038;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
@@ -74,23 +74,59 @@ h1 {
 }
 
 button {
-    opacity: 0;
     font-family: 'Fira Code', monospace;
-    animation: fadeIn 1s forwards 3.5s;
     background-color: var(--primary-color);
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     color: var(--bg-color);
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.3s ease;
+    transform-style: preserve-3d; 
 }
 
 button:hover {
-    transform: scale(1.05);
+    transform: rotateX(20deg) scale(1.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(1rem); }
-    to   { opacity: 1; transform: translate(0); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+#results {
+    transition: opacity 0.5s ease;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+#definition li {
+    opacity: 0;
+    transform: translateY(-1rem);
+    animation: slideIn 0.5s forwards;
+    animation-delay: calc(var(--i) * 0.3s);
+}
+
+@keyframes slideIn {
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
