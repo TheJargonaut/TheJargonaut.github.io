@@ -135,6 +135,18 @@ function appendToDefinitionList(word, definition) {
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+    
+function toggleTranscription() {
+    const results = document.getElementById('results');
+    const button = document.getElementById('toggleTranscription');
+    if (results.classList.contains('hide')) {
+        results.classList.remove('hide');
+        button.textContent = "Hide Transcription";
+    } else {
+        results.classList.add('hide');
+        button.textContent = "Show Transcription";
+    }
+}
 
 function sendNotification() {
     if (Date.now() - lastWordTimestamp <= 10000) {
