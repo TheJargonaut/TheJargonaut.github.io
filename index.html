@@ -139,14 +139,17 @@ function capitalizeFirstLetter(string) {
 function toggleTranscription() {
     const results = document.getElementById('results');
     const button = document.getElementById('toggleTranscription');
-    if (results.classList.contains('hide')) {
-        results.classList.remove('hide');
+    if (results.style.display === 'none') {
+        results.style.display = 'block';
+        results.classList.add('show');
         button.textContent = "Hide Transcription";
     } else {
-        results.classList.add('hide');
+        results.style.display = 'none';
+        results.classList.remove('show');
         button.textContent = "Show Transcription";
     }
 }
+
 
 function sendNotification() {
     if (Date.now() - lastWordTimestamp <= 10000) {
