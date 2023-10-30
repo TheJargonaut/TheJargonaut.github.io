@@ -1,96 +1,84 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+/* Classy, Animated CSS - WordSense Corp. */
+
+/* Google Fonts and Neon Glow Effect */
+@import url('https://fonts.googleapis.com/css2?family=Shrikhand&display=swap');
 
 :root {
-    --primary-color: #00FF00; /* Neon Green */
-    --secondary-color: #FFFFFF; /* White */
-    --bg-color: #000000; /* Black */
+    --primary-color: #FF5E78;  /* Blush Pink */
+    --secondary-color: #FFFFFF;  /* White */
+    --bg-color: #1A1A1A;  /* Dark Gray */
 }
 
+/* Essential Body Styles */
 body {
-    font-family: 'Fira Code', monospace;
+    font-family: 'Shrikhand', cursive;
     background-color: var(--bg-color);
     color: var(--primary-color);
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-image: url('https://giffiles.alphacoders.com/209/209037.gif');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre-big.png');
+    background-blend-mode: overlay;
+    animation: bodyFadeIn 3s;
 }
 
-#results {
-    width: 90%;
-    height: auto;
-    display: none;
-    padding: 20px;
-    margin: 20px auto;
-    background-color: black;
-    border: 1px solid #21f038; /* Neon coder green border */
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+@keyframes bodyFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-#results:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-@keyframes fadeInBox {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-}
-
-.uncommon {
-    color: var(--primary-color);
-    text-shadow: 0 0 12px var(--primary-color);
-    font-weight: bold;
-}
-
+/* Header Animation */
 h1 {
-    font-size: 4rem;
+    font-size: 5rem;
     margin-bottom: 1rem;
-    color: var(--primary-color);
-    border-right: .15em solid var(--primary-color);
-    white-space: nowrap;
-    overflow: hidden;
-    width: 9ch;
-    animation: typing 3s steps(9, end), blink-caret .75s step-end infinite;
+    animation: neonGlow 3s infinite alternate;
 }
 
-@keyframes typing {
-    from { width: 0 }
-    to { width: 9ch }
+@keyframes neonGlow {
+    from {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--primary-color), 0 0 20px var(--primary-color), 0 0 25px var(--primary-color), 0 0 30px var(--primary-color), 0 0 35px var(--primary-color);
+    }
+    to {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--primary-color), 0 0 40px var(--primary-color), 0 0 50px var(--primary-color), 0 0 60px var(--primary-color), 0 0 70px var(--primary-color);
+    }
 }
 
-@keyframes blink-caret {
-    from, to { border-color: transparent }
-    50% { border-color: var(--primary-color); }
-}
-
+/* Button Styles */
 button {
-    opacity: 0;
-    font-family: 'Fira Code', monospace;
-    animation: fadeIn 1s forwards 3.5s;
+    font-family: 'Shrikhand', cursive;
     background-color: var(--primary-color);
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
     color: var(--bg-color);
     cursor: pointer;
-    transition: transform 0.2s;
+    animation: wiggle 2s infinite;
 }
 
-button:hover {
-    transform: scale(1.05);
+@keyframes wiggle {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(3deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-3deg); }
+    100% { transform: rotate(0deg); }
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(1rem); }
-    to   { opacity: 1; transform: translate(0); }
+/* Results Box */
+#results {
+    animation: 3s ease-out 0s 1 slideInFromRight;
+}
+
+@keyframes slideInFromRight {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* Uncommon Word Highlighting */
+.uncommon {
+    animation: color-change 3s infinite;
+}
+
+@keyframes color-change {
+    0% { color: var(--primary-color); }
+    50% { color: var(--secondary-color); }
+    100% { color: var(--primary-color); }
 }
