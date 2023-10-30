@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
 
 :root {
-    --primary-color: #00FF00; /* Neon Green */
-    --secondary-color: #FFFFFF; /* White */
-    --bg-color: #000000; /* Black */
+    --primary-color: #00FF00;
+    --secondary-color: #FFFFFF;
+    --bg-color: #000000;
 }
 
 body {
@@ -27,23 +27,18 @@ body {
 #results {
     width: 90%;
     height: auto;
-    display: none;
     padding: 20px;
     margin: 20px auto;
     background-color: black;
-    border: 1px solid #21f038;
+    border: 1px solid var(--primary-color);
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    transition: opacity 0.5s ease;
+    opacity: 1; /* Shown by default */
 }
 
-#results:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-@keyframes fadeInBox {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
+#results.hide {
+    opacity: 0;
 }
 
 .uncommon {
@@ -64,16 +59,17 @@ h1 {
 }
 
 @keyframes typing {
-    from { width: 0 }
-    to { width: 9ch }
+    from { width: 0; }
+    to { width: 9ch; }
 }
 
 @keyframes blink-caret {
-    from, to { border-color: transparent }
+    from, to { border-color: transparent; }
     50% { border-color: var(--primary-color); }
 }
 
 button {
+    opacity: 0;
     font-family: 'Fira Code', monospace;
     background-color: var(--primary-color);
     border: none;
@@ -81,42 +77,20 @@ button {
     border-radius: 5px;
     color: var(--bg-color);
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.3s ease;
-    transform-style: preserve-3d; 
+    transition: transform 0.2s, opacity 0.5s;
+    animation: fadeIn 1s forwards 3.5s;
 }
 
 button:hover {
-    transform: rotateX(20deg) scale(1.1);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(1rem); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-#results {
-    transition: opacity 0.5s ease;
-}
-
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-
+/* List Animations */
 #definition li {
     opacity: 0;
     transform: translateY(-1rem);
