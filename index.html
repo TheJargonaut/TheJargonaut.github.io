@@ -16,6 +16,12 @@
     </div>
     <div id="results" style="display:none;"></div>
     <ul id="definition"></ul>
+    <button id="infoButton" onclick="toggleInfo()">?</button>
+<div id="infoPopup" class="hide">
+    <h2 class="infoTitle">What is WordSense?</h2>
+    <p id="infoText"></p>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     if (Notification.permission !== "granted") {
@@ -150,6 +156,18 @@ function toggleTranscription() {
     }
 }
 
+const infoPopup = document.getElementById("infoPopup");
+const infoText = document.getElementById("infoText");
+
+function toggleInfo() {
+    if (infoPopup.classList.contains("hide")) {
+        infoText.textContent = "";
+        infoPopup.classList.remove("hide");
+        infoText.textContent = "Ever been in a chat with a Brit who thinks they're the fanciest? Or stuck in a meeting, baffled by big words? WordSense has got you!";
+    } else {
+        infoPopup.classList.add("hide");
+    }
+}
 
 function sendNotification() {
     if (Date.now() - lastWordTimestamp <= 10000) {
