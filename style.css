@@ -108,6 +108,53 @@ button:hover {
     from { width: 0 }
     to { width: 100% }
 }
+#questionMark {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    border: none;
+    font-size: 1.5rem;
+    background: url('path_to_your_png_image.png') no-repeat;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#infoBox {
+    position: fixed;
+    top: 70px;
+    right: 50px;
+    padding: 10px;
+    background-color: #000;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    box-shadow: 0 0 12px var(--primary-color);
+    max-height: 200px;
+    overflow-y: auto;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1000;  /* To make sure it appears above other content */
+}
+
+#infoBox h2 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    border-right: 0.15em solid var(--primary-color);
+    white-space: nowrap;
+    overflow: hidden;
+    animation: none;  /* Override the previous animation for headers */
+}
+
+#infoBox p {
+    white-space: normal;
+    animation: none;  /* Override the previous animation for paragraphs */
+}
+
+.hidden {
+    display: none;
+}
+
 
 
 /* List Animations */
