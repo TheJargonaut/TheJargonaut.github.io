@@ -32,7 +32,7 @@ let definedWords = new Set();
 let wordBuffer = [];
 
 function stripPunctuation(word) {
-    return word.toLowerCase().replace(/[\W_]+./g, "");
+    return word.toLowerCase().replace(/[\W_]+/g, "");
 }
 
 async function fetchLemma(word) {
@@ -162,6 +162,10 @@ function sendNotification() {
     }
 }
 
+function toggleRealTimeNotifications() {
+    realTimeNotify = !realTimeNotify;
+    document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
+}
 </script>
 </body>
 </html>
