@@ -23,7 +23,24 @@ body {
     background-repeat: no-repeat;
 }
 
-/* ... (Rest of your CSS styles) ... */
+#results:hover {
+    transform: perspective(500px) rotateX(5deg);
+}
+
+/* Sophisticated show/hide effects */
+@keyframes fadeInBox {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+#results.show {
+    animation: fadeInBox 0.5s forwards;
+}
+
+@keyframes fastTyping {
+    from { width: 0 }
+    to { width: 100% }
+}
 
 /* For the Question Mark button */
 #questionMark {
