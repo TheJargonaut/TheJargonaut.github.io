@@ -13,10 +13,8 @@
         <button id="notifyButton" onclick="sendNotification()" disabled>Notify</button>
         <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
         <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
-        <button id="question-button"></button>
     </div>
     <div id="results" style="display:none;"></div>
-    <div id="hello-div">hello</div>
     <ul id="definition"></ul>
     
 <script>
@@ -163,32 +161,7 @@ function sendNotification() {
         });
     }
 }
-var button = document.getElementById("question-button");
-var div = document.getElementById("hello-div");
 
-// add an event listener that shows or hides the div when the button is hovered
-button.addEventListener("mouseover", function() {
-    // fade in the div
-    div.style.display = "block";
-    div.style.opacity = "0";
-    setTimeout(function() {
-        div.style.opacity = "1";
-    }, 100);
-});
-button.addEventListener("mouseout", function() {
-    // fade out the div
-    div.style.opacity = "0";
-    setTimeout(function() {
-        div.style.display = "none";
-    }, 500);
-});
-
-// set the background image of the button to a question mark icon
-button.style.backgroundImage = "https://th.bing.com/th/id/R.50db0a0cfebcce6af61ed5a630df9129?rik=OjCoKZv7AERiKg&riu=http%3a%2f%2fwww.clker.com%2fcliparts%2fR%2f5%2f3%2fD%2fy%2fO%2fgreen-question-mark-md.png&ehk=zv%2fFBCmshdvYQFJSUFCXZ7rZDaieQxlf8M9fgfdTE%2bI%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1";
-function toggleRealTimeNotifications() {
-    realTimeNotify = !realTimeNotify;
-    document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
-}
 </script>
 </body>
 </html>
