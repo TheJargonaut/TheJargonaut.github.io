@@ -108,62 +108,6 @@ button:hover {
     from { width: 0 }
     to { width: 100% }
 }
-/* import a hacker font from Google Fonts */
-@import url('https://fonts.googleapis.com/css?family=Orbitron');
-
-/* style the button element */
-#question-button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50px;
-  height: 50px;
-  border: none;
-  background: url no-repeat center;
-  background-size: contain;
-}
-
-/* style the div element */
-#hello-div {
-  position: absolute;
-  top: 50px;
-  right: 0;
-  width: 100px;
-  height: 50px;
-  border: 1px solid limegreen;
-  background-color: black;
-  text-align: center;
-  line-height: 50px;
-  display: none;
-  /* use the hacker font */
-  font-family: 'Orbitron', sans-serif;
-  font-size: 20px;
-  color: limegreen;
-}
-
-/* create a cursor effect for the div element */
-#hello-div::after {
-  content: '';
-  position: absolute;
-  right: -5px;
-  top: -5px;
-  width: calc(100% + 10px);
-  height: calc(100% + 10px);
-  border-right: solid limegreen; 
-}
-
-/* animate the cursor effect */
-@keyframes blink {
-    from { opacity:1; }
-    to { opacity:0; }
-}
-#hello-div::after {
-    animation-name: blink; 
-    animation-duration:.5s; 
-    animation-iteration-count: infinite; 
-    animation-direction:normal; 
-}
-
 
 
 /* List Animations */
