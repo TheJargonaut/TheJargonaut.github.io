@@ -59,7 +59,7 @@ h1 {
 
 @keyframes typing {
     from { width: 0 }
-    to { width: 9ch }
+    to { width: 9.1ch }
 }
 
 @keyframes blink-caret {
@@ -121,8 +121,6 @@ button:hover {
   border: none;
   background: url no-repeat center;
   background-size: contain;
-  /* make the button neon green */
-  filter: brightness(200%) hue-rotate(90deg);
 }
 
 /* style the div element */
