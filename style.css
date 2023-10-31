@@ -53,13 +53,13 @@ h1 {
     border-right: .15em solid var(--primary-color);
     white-space: nowrap;
     overflow: hidden;
-    width: 10ch;
-    animation: typing 3s steps(10, end), blink-caret .75s step-end infinite;
+    width: 9ch;
+    animation: typing 3s steps(9, end), blink-caret .5s step-end infinite;
 }
 
 @keyframes typing {
     from { width: 0 }
-    to { width: 10ch }
+    to { width: 9ch }
 }
 
 @keyframes blink-caret {
