@@ -162,49 +162,33 @@ function sendNotification() {
         });
     }
 }
-    document.addEventListener("DOMContentLoaded", function() {
-    const infoIcon = document.getElementById('infoIcon');
-    const infoPopup = document.getElementById('infoPopup');
-    let animationDone = false;
+var button = document.getElementById("question-button");
+var div = document.getElementById("hello-div");
 
-    infoIcon.addEventListener('mouseenter', function() {
-        if (!animationDone) {
-            cursorAnimation();
-        }
-        infoPopup.classList.remove('hidden');
-    });
+// add an event listener that shows or hides the div when the button is hovered
+button.addEventListener("mouseover", function() {
+    // fade in the div
+    div.style.display = "block";
+    div.style.opacity = "0";
+    setTimeout(function() {
+        div.style.opacity = "1";
+    }, 100);
+});
+button.addEventListener("mouseout", function() {
+    // fade out the div
+    div.style.opacity = "0";
+    setTimeout(function() {
+        div.style.display = "none";
+    }, 500);
+});
 
-    infoIcon.addEventListener('mouseleave', function() {
-        infoPopup.classList.add('hidden');
-    });
-
-    function cursorAnimation() {
-        const title = infoPopup.querySelector('h2');
-        const body = infoPopup.querySelector('p');
-        
-        let titleText = title.textContent;
-        let bodyText = body.textContent;
-
-        title.textContent = '';
-        body.textContent = '';
-
-        let titleInterval = setInterval(() => {
-            title.textContent += titleText.slice(0, 1);
-            titleText = titleText.substr(1);
-            if (titleText.length === 0) {
-                clearInterval(titleInterval);
-                let bodyInterval = setInterval(() => {
-                    body.textContent += bodyText.slice(0, 1);
-                    bodyText = bodyText.substr(1);
-                    if (bodyText.length === 0) {
-                        clearInterval(bodyInterval);
-                        animationDone = true;
-                    }
-                }, 30);  // speed of cursor typing for the body
-            }
+// set the background image of the button to a question mark icon
+button.style.backgroundImage = "url";
         }, 60);  // speed of cursor typing for the title
     }
 });
+
+
 
 function toggleRealTimeNotifications() {
     realTimeNotify = !realTimeNotify;
