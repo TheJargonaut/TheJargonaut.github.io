@@ -14,6 +14,17 @@
         <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
         <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
     </div>
+    <div id="infoContainer">
+        <img src="path_to_your_circled_question_mark.png" alt="Help" id="infoIcon">
+        <div id="infoPopup" class="hidden">
+            <h2>What is WordSense?</h2>
+            <p>
+                Ever been in a chat where someone drops a bombastic word that flies right over your head? 
+                Or found yourself in the deep end of a business convo, wondering what on earth they're talking about? 
+                WordSense is here to help you out. Just let it listen, and it'll break things down for you. Simple!
+            </p>
+        </div>
+    </div>
     <div id="results" style="display:none;"></div>
     <ul id="definition"></ul>
     
@@ -161,6 +172,50 @@ function sendNotification() {
         });
     }
 }
+    document.addEventListener("DOMContentLoaded", function() {
+    const infoIcon = document.getElementById('infoIcon');
+    const infoPopup = document.getElementById('infoPopup');
+    let animationDone = false;
+
+    infoIcon.addEventListener('mouseenter', function() {
+        if (!animationDone) {
+            cursorAnimation();
+        }
+        infoPopup.classList.remove('hidden');
+    });
+
+    infoIcon.addEventListener('mouseleave', function() {
+        infoPopup.classList.add('hidden');
+    });
+
+    function cursorAnimation() {
+        const title = infoPopup.querySelector('h2');
+        const body = infoPopup.querySelector('p');
+        
+        let titleText = title.textContent;
+        let bodyText = body.textContent;
+
+        title.textContent = '';
+        body.textContent = '';
+
+        let titleInterval = setInterval(() => {
+            title.textContent += titleText.slice(0, 1);
+            titleText = titleText.substr(1);
+            if (titleText.length === 0) {
+                clearInterval(titleInterval);
+                let bodyInterval = setInterval(() => {
+                    body.textContent += bodyText.slice(0, 1);
+                    bodyText = bodyText.substr(1);
+                    if (bodyText.length === 0) {
+                        clearInterval(bodyInterval);
+                        animationDone = true;
+                    }
+                }, 30);  // speed of cursor typing for the body
+            }
+        }, 60);  // speed of cursor typing for the title
+    }
+});
+
 
 function toggleRealTimeNotifications() {
     realTimeNotify = !realTimeNotify;
