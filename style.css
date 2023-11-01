@@ -60,7 +60,7 @@ body {
   padding: 40px;
   background-color: #000000;
   z-index: 10;
-  opacity: 0;  /* changed initial opacity to 0 for fade-in */
+  opacity: 1;  
   border-radius: 20px;  /* rounded rectangle */
   transition: opacity 0.5s;
   font-family: 'Courier New', monospace;
