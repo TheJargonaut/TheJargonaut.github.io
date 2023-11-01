@@ -13,8 +13,15 @@
         <button id="notifyButton" onclick="sendNotification()" disabled>Notify</button>
         <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
         <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
+        <button id="showDialogButton">Show Dialog</button>
     </div>
-    
+<div id="dialogBox" class="hidden">
+    <span id="closeButton" class="close-button">?</span>
+    <div class="header">Placeholder Header</div>
+    <div class="body">
+      <span id="text"></span><span class="cursor"></span>
+    </div>
+</div>
     <div id="results" style="display:none;"></div>
     <ul id="definition"></ul>
     
@@ -59,6 +66,36 @@ async function toggleRecording() {
     }
     isRecording = !isRecording;
 }
+document.addEventListener('DOMContentLoaded', function() {
+  const showDialogButton = document.getElementById('showDialogButton');
+  const dialogBox = document.getElementById('dialogBox');
+  const closeButton = document.getElementById('closeButton');
+  const textElement = document.getElementById('text');
+
+  const text = 'This is some coder text.';
+  let index = 0;
+
+  showDialogButton.addEventListener('click', function() {
+    dialogBox.style.opacity = '1';
+    dialogBox.classList.remove('hidden');
+    typeText();
+  });
+
+  closeButton.addEventListener('click', function() {
+    dialogBox.style.opacity = '0';
+    setTimeout(() => {
+      dialogBox.classList.add('hidden');
+    }, 500);
+  });
+
+  function typeText() {
+    if (index < text.length) {
+      textElement.innerHTML += text.charAt(index);
+      index++;
+      setTimeout(typeText, 100);
+    }
+  }
+});
 
 async function startListening() {
     recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -162,49 +199,6 @@ function sendNotification() {
         });
     }
 }
-    document.addEventListener("DOMContentLoaded", function() {
-    const infoIcon = document.getElementById('infoIcon');
-    const infoPopup = document.getElementById('infoPopup');
-    let animationDone = false;
-
-    infoIcon.addEventListener('mouseenter', function() {
-        if (!animationDone) {
-            cursorAnimation();
-        }
-        infoPopup.classList.remove('hidden');
-    });
-
-    infoIcon.addEventListener('mouseleave', function() {
-        infoPopup.classList.add('hidden');
-    });
-
-    function cursorAnimation() {
-        const title = infoPopup.querySelector('h2');
-        const body = infoPopup.querySelector('p');
-        
-        let titleText = title.textContent;
-        let bodyText = body.textContent;
-
-        title.textContent = '';
-        body.textContent = '';
-
-        let titleInterval = setInterval(() => {
-            title.textContent += titleText.slice(0, 1);
-            titleText = titleText.substr(1);
-            if (titleText.length === 0) {
-                clearInterval(titleInterval);
-                let bodyInterval = setInterval(() => {
-                    body.textContent += bodyText.slice(0, 1);
-                    bodyText = bodyText.substr(1);
-                    if (bodyText.length === 0) {
-                        clearInterval(bodyInterval);
-                        animationDone = true;
-                    }
-                }, 30);
-            }
-        }, 60); 
-    }
-});
 
 function toggleRealTimeNotifications() {
     realTimeNotify = !realTimeNotify;
