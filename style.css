@@ -21,33 +21,12 @@ body {
     background-position: center;
     background-repeat: no-repeat;
 }
-#dialogBox {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border: 2px solid #00ff00;
-  width: 600px;
-  height: 600px;
-  padding: 40px;
-  background-color: #000000;
-  z-index: 10;
-  opacity: 0;  
-  animation: fadeIn 3s ease-in-out forwards
-  border-radius: 20px;  /* rounded rectangle */
-  transition: opacity 0.5s;
-  font-family: 'Courier New', monospace;
-}
 #showDialogButton {
     color: #39FF14; /* Neon Green */
     background-color: black;
-    border: #39FF14;
-
-@keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
+    border: 2px solid #39FF14; /* Neon Green border */
 }
+
 #results {
     width: 90%;
     padding: 20px;
@@ -71,6 +50,22 @@ body {
   display: none;
 }
 
+#dialogBox {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid #00ff00;
+  width: 600px;
+  height: 600px;
+  padding: 40px;
+  background-color: #000000;
+  z-index: 10;
+  opacity: 1;  
+  border-radius: 20px;  /* rounded rectangle */
+  transition: opacity 0.5s;
+  font-family: 'Courier New', monospace;
+}
 
 .close-button {
   position: absolute;
