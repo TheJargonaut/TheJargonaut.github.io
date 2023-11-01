@@ -9,7 +9,6 @@
 body {
     font-family: 'Fira Code', monospace;
     color: var(--primary-color);
-    overflow: hidden;
     margin: 0;
     padding: 0;
     height: 100vh;
@@ -17,7 +16,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://giffiles.alphacoders.com/209/209037.gif');
+    background: var(--bg-color) url('https://giffiles.alphacoders.com/209/209037.gif');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -25,15 +24,12 @@ body {
 
 #results {
     width: 90%;
-    height: auto;
-    display: block; 
     padding: 20px;
     margin: 20px auto;
-    background-color: black;
-    border: 1px solid #21f038; 
+    background-color: var(--bg-color);
+    border: 1px solid var(--primary-color);
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
 }
 
 #results:hover {
