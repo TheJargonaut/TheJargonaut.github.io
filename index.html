@@ -13,7 +13,7 @@
         <button id="notifyButton" onclick="sendNotification()" disabled>Notify</button>
         <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
         <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
-        <button id="showDialogButton">Show Dialog</button>
+        <button id="showDialogButton">What is WordSense?</button>
     </div>
 <div id="dialogBox" class="hidden">
     <span id="closeButton" class="close-button">x</span>
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeButton = document.getElementById('closeButton');
   const textElement = document.getElementById('text');
 
-  const text = 'This is some coder text.';
+  const text = 'Ever been in a business meeting with some prick who thinks he invented the English language? That guy. "Despite the epistemological quandaries presented by the dichotomy between constructivist ontology and positivist empiricism, the confluence of post-structuralist theories and quantum mechanics beckons scholars to reevaluate the hermeneutic frameworks that underpin our understanding of intersubjective reality." What did he say? You might have just lost the job because of a prestentious wannabe Brit. And whipping out your phone to Google a word mid-interview might not be the best idea, would it? Well, WordSense was created for these very situations. In what will eventually be ported to Apple Watch, WordSense will be able to define words in the moment, to your wrist, with a double tap of yur fingers on Series 9 and Ultra 2 onwards. Sneak a peek at your wrist and save yourself from looking like a dum-dum: Welcome to WordSense.;
   let index = 0;
 
   showDialogButton.addEventListener('click', function() {
