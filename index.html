@@ -199,6 +199,24 @@ function sendNotification() {
         });
     }
 }
+const dialogBox = document.getElementById("dialogBox");
+
+// Function to fade in
+function fadeIn() {
+  dialogBox.style.opacity = "1";
+}
+
+// Function to fade out
+function fadeOut() {
+  dialogBox.style.opacity = "0";
+}
+
+// Trigger the fade-in when you need it
+fadeIn();
+
+// Trigger the fade-out when you need it
+// fadeOut();
+
 
 function toggleRealTimeNotifications() {
     realTimeNotify = !realTimeNotify;
