@@ -21,6 +21,11 @@ body {
     background-position: center;
     background-repeat: no-repeat;
 }
+#showDialogButton {
+    color: #39FF14; /* Neon Green */
+    background-color: black;
+    border: none;
+}
 
 #results {
     width: 90%;
