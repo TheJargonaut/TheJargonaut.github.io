@@ -55,18 +55,16 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   border: 2px solid #00ff00;
-  width: 600px; 
-  height: 600px; 
-  padding: 40px;  
+  width: 600px;
+  height: 600px;
+  padding: 40px;
   background-color: #000000;
   z-index: 10;
-  opacity: 1; 
-  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-  border-radius: 20px 20px 0px;  
+  opacity: 0;  /* changed initial opacity to 0 for fade-in */
+  border-radius: 20px;  /* rounded rectangle */
   transition: opacity 0.5s;
   font-family: 'Courier New', monospace;
 }
-
 
 .close-button {
   position: absolute;
@@ -90,7 +88,6 @@ body {
     opacity: 0;
   }
 }
-
 
 h1 {
     font-size: 4rem;
