@@ -55,14 +55,18 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   border: 2px solid #00ff00;
-  width: 300px;
-  padding: 20px;
+  width: 600px; 
+  height: 600px; 
+  padding: 40px;  
   background-color: #000000;
   z-index: 10;
-  opacity: 0;
+  opacity: 1; 
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  border-radius: 20px 20px 0px;  
   transition: opacity 0.5s;
   font-family: 'Courier New', monospace;
 }
+
 
 .close-button {
   position: absolute;
