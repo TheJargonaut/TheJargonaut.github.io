@@ -45,6 +45,48 @@ body {
     text-shadow: 0 0 12px var(--primary-color);
     font-weight: bold;
 }
+.hidden {
+  display: none;
+}
+
+#dialogBox {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid #00ff00;
+  width: 300px;
+  padding: 20px;
+  background-color: #ffffff;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.5s;
+  font-family: 'Courier New', monospace;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.header {
+  font-weight: bold;
+  text-shadow: 0 0 5px #00ff00;
+}
+
+.cursor {
+  border-left: 2px solid #00ff00;
+  animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
 
 h1 {
     font-size: 4rem;
