@@ -38,7 +38,7 @@
             }
         });
 
-        // Initialize variables
+       
         let recognition;
         let isRecording = false;
         let realTimeNotify = false;
@@ -46,7 +46,7 @@
         let definedWords = new Set();
         let wordBuffer = [];
 
-        // Function definitions
+
         function stripPunctuation(word) {
             return word.toLowerCase().replace(/[\W_]+/g, "");
         }
@@ -75,7 +75,7 @@
             const closeButton = document.getElementById('closeButton');
             const textElement = document.getElementById('text');
 
-            // Define the text to be typed
+
             const text = 'Ever been in a meeting or interview with a pompous old prig who thinks he invented the English language? We all know that guy. "Despite the epistemological quandaries presented by the dichotomy between constructivist ontology and positivist empiricism, the confluence of post-structuralist theories and quantum mechanics beckons scholars to reevaluate the hermeneutic frameworks that underpin our understanding of intersubjective reality." What did he say? You might have just lost the job because of a pretentious wannabe Brit. And whipping out your phone to Google a word mid-interview might not be the best idea, would it? Well, WordSense was created for these very situations. In what will eventually be ported to Apple Watch, WordSense will be able to define words in the moment, to your wrist, with a double tap of your fingers on Series 9 and Ultra 2 onwards. Sneak a peek at your wrist and save yourself from looking like a dum-dum: Welcome to WordSense.';
             let index = 0;
 
@@ -101,16 +101,12 @@
             }
         });
 
-                // Continued JavaScript part
-
-// ... [Previous Code] ...
 
 async function processBufferedWords() {
     while (wordBuffer.length > 0) {
         const word = wordBuffer.shift();
         const cleanWord = stripPunctuation(word);
 
-        // Use cleanWord for caching to avoid punctuation causing cache misses
         if (wordCache.has(cleanWord)) {
             appendToResults(word, false);
             continue;
@@ -133,7 +129,6 @@ async function processBufferedWords() {
             }
         } else {
             appendToResults(word, false);
-            // Add the cleanWord to the cache even if it's not uncommon
             wordCache.add(cleanWord);
         }
     }
@@ -145,7 +140,6 @@ async function fetchWordFrequency(word) {
     return parseFloat(data[0]?.tags?.find(tag => tag.startsWith("f:"))?.substring(2) || "1000");
 }
 
-// ... [Rest of your functions] ...
 
 
         function capitalizeFirstLetter(string) {
@@ -168,12 +162,6 @@ async function fetchWordFrequency(word) {
             realTimeNotify = !realTimeNotify;
             document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
         }
-    </script>
-
-</body>
-
-</html>
-
     </script>
 
 </body>
