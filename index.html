@@ -47,9 +47,12 @@
         let wordBuffer = [];
 
         // Function definitions
-        function stripPunctuation(word) {
-            return word.toLowerCase().replace(/[\W_]+/g, "");
-        }
+       function stripPunctuation(word) {
+                console.log("Original word:", word);
+                const word = word.toLowerCase().replace(/[\W_]+/g, "");
+                console.log("Stripped word:", word);
+                return word;
+}
 
         // Fetch lemma for a given word
         async function fetchLemma(word) {
@@ -146,7 +149,7 @@
                     const frequencyJSON = await frequencyData.json();
                     const frequency = parseFloat(frequencyJSON[0]?.tags?.find(tag => tag.startsWith("f:"))?.substring(2) || "1000");
 
-                    if (frequency < 4) {
+                    if (frequency < 7) {
                         const definition = await fetchDefinition(lemmaWord);
                         if (definition) {
                             definedWords.add(lemmaWord);
