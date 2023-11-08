@@ -47,8 +47,8 @@
         let wordBuffer = [];
 
         // Function definitions
-        function stripPunctuation(word) {
-            return word.toLowerCase().replace(/[\W_]+/g, "");
+        function stripPunctuation() {
+            return lemmaWord.toLowerCase().replace(/[\W_]+/g, "");
         }
 
         // Fetch lemma for a given word
@@ -108,6 +108,8 @@
             }
         });
 
+                // Continued JavaScript part
+
         async function startListening() {
             recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.interimResults = false;
@@ -136,18 +138,18 @@
         async function processBufferedWords() {
             while (wordBuffer.length > 0) {
                 const word = wordBuffer.shift();
-                const word = stripPunctuation(word);
-                const word = await fetchLemma(word);
+                const cleanWord = stripPunctuation(word);
+                const lemmaWord = await fetchLemma(cleanWord);
 
-                if (!definedWords.has(word)) {
-                    const frequencyData = await fetch(`https://api.datamuse.com/words?sp=${word}&md=f`);
+                if (!definedWords.has(lemmaWord)) {
+                    const frequencyData = await fetch(`https://api.datamuse.com/words?sp=${lemmaWord}&md=f`);
                     const frequencyJSON = await frequencyData.json();
                     const frequency = parseFloat(frequencyJSON[0]?.tags?.find(tag => tag.startsWith("f:"))?.substring(2) || "1000");
 
                     if (frequency < 7) {
-                        const definition = await fetchDefinition(word);
+                        const definition = await fetchDefinition(lemmaWord);
                         if (definition) {
-                            definedWords.add(word);
+                            definedWords.add(lemmaWord);
                             appendToResults(word, true);
                             appendToDefinitionList(word, definition);
                             if (realTimeNotify) {
