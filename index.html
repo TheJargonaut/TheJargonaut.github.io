@@ -47,12 +47,9 @@
         let wordBuffer = [];
 
         // Function definitions
-       function stripPunctuation(word) {
-                console.log("Original word:", word);
-                const word = word.toLowerCase().replace(/[\W_]+/g, "");
-                console.log("Stripped word:", word);
-                return word;
-}
+        function stripPunctuation(word) {
+            return word.toLowerCase().replace(/[\W_]+/g, "");
+        }
 
         // Fetch lemma for a given word
         async function fetchLemma(word) {
@@ -111,8 +108,6 @@
             }
         });
 
-                // Continued JavaScript part
-
         async function startListening() {
             recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.interimResults = false;
@@ -141,18 +136,18 @@
         async function processBufferedWords() {
             while (wordBuffer.length > 0) {
                 const word = wordBuffer.shift();
-                const cleanWord = stripPunctuation(word);
-                const lemmaWord = await fetchLemma(cleanWord);
+                const word = stripPunctuation(word);
+                const word = await fetchLemma(word);
 
-                if (!definedWords.has(lemmaWord)) {
-                    const frequencyData = await fetch(`https://api.datamuse.com/words?sp=${lemmaWord}&md=f`);
+                if (!definedWords.has(word)) {
+                    const frequencyData = await fetch(`https://api.datamuse.com/words?sp=${word}&md=f`);
                     const frequencyJSON = await frequencyData.json();
                     const frequency = parseFloat(frequencyJSON[0]?.tags?.find(tag => tag.startsWith("f:"))?.substring(2) || "1000");
 
                     if (frequency < 7) {
-                        const definition = await fetchDefinition(lemmaWord);
+                        const definition = await fetchDefinition(word);
                         if (definition) {
-                            definedWords.add(lemmaWord);
+                            definedWords.add(word);
                             appendToResults(word, true);
                             appendToDefinitionList(word, definition);
                             if (realTimeNotify) {
