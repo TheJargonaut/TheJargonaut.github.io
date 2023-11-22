@@ -138,7 +138,7 @@
                     const frequencyJSON = await frequencyData.json();
                     const frequency = parseFloat(frequencyJSON[0]?.tags?.find(tag => tag.startsWith("f:"))?.substring(2) || "1000");
 
-                    if (frequency < 7) {
+                    if (frequency < 1.4) {
                         const definition = await fetchDefinition(cleanWord);
                         if (definition) {
                             definedWords.add(cleanWord);
