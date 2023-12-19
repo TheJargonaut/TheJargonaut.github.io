@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
 
 :root {
-    --primary-color: #00FF00; 
+    --primary-color: #00FF00;
     --secondary-color: #FFFFFF;
     --bg-color: #000000;
 }
@@ -41,53 +41,64 @@ body {
     text-shadow: 0 0 12px var(--primary-color);
     font-weight: bold;
 }
+
 .hidden {
-  display: none;
+    display: none;
 }
-#showDialogButton {
+
+#showDialogButton, #changeProficiencyBtn {
     color: #39FF14; /* Neon Green */
     background-color: black;
     border: 2px solid #39FF14; /* Neon Green border */
+    font-family: 'Fira Code', monospace;
+    padding: 10px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+#showDialogButton:hover, #changeProficiencyBtn:hover {
+    transform: translateY(-5px);
 }
 
 #dialogBox {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border: 2px solid #00ff00;
-  width: 600px;
-  height: 600px;
-  padding: 40px;
-  background-color: #000000;
-  z-index: 10;
-  opacity: 1;  
-  border-radius: 20px;  /* rounded rectangle */
-  transition: opacity 0.5s;
-  font-family: 'Courier New', monospace;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid #00ff00;
+    width: 600px;
+    height: 600px;
+    padding: 40px;
+    background-color: #000000;
+    z-index: 10;
+    opacity: 1;  
+    border-radius: 20px;  /* rounded rectangle */
+    transition: opacity 0.5s;
+    font-family: 'Courier New', monospace;
 }
 
 .close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
 }
 
 .header {
-  font-weight: bold;
-  text-shadow: 0 0 5px #00ff00;
+    font-weight: bold;
+    text-shadow: 0 0 5px #00ff00;
 }
 
 .cursor {
-  border-left: 2px solid #00ff00;
-  animation: blink 0.5s infinite;
+    border-left: 2px solid #00ff00;
+    animation: blink 0.5s infinite;
 }
 
 @keyframes blink {
-  100% {
-    opacity: 0;
-  }
+    100% {
+        opacity: 0;
+    }
 }
 
 h1 {
@@ -125,7 +136,7 @@ button {
 }
 
 button:hover {
-    transform: translateY(-5px);  /* Smooth hover effect */
+    transform: translateY(-5px);
 }
 
 @keyframes fadeIn {
@@ -133,41 +144,44 @@ button:hover {
     to   { opacity: 1; transform: translate(0); }
 }
 
-
-#results:hover {
-    transform: perspective(500px) rotateX(5deg);
+.slider-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
 }
 
-
-@keyframes fadeInBox {
-    0% { opacity: 0; transform: scale(0.9); }
-    100% { opacity: 1; transform: scale(1); }
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: var(--secondary-color);
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
 }
 
-#results.show {
-    animation: fadeInBox 0.5s forwards;
+.slider:hover {
+    opacity: 1;
 }
 
-#results.hide {
-    animation: fadeOutBox 0.5s backwards;
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
 }
 
-@keyframes fastTyping {
-    from { width: 0 }
-    to { width: 100% }
-}
-
-
-#definition li {
-    opacity: 0;
-    transform: translateY(-1rem);
-    animation: slideIn 0.5s forwards;
-    animation-delay: calc(var(--i) * 0.3s);
-}
-
-@keyframes slideIn {
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
 }
