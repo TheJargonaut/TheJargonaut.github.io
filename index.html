@@ -136,9 +136,9 @@
                 if (!definedWords.has(cleanWord)) {
                     const frequencyData = await fetch(`https://api.datamuse.com/words?sp=${cleanWord}&md=f`);
                     const frequencyJSON = await frequencyData.json();
-                    const frequency = parseFloat(frequencyJSON[0]?.tags?.find(tag => tag.startsWith("f:"))?.substring(2) || "1500");
+                    const frequency = parseFloat(frequencyJSON[0]?.tags?.find(tag => tag.startsWith("f:"))?.substring(2) || "1000");
 
-                    if (frequency < 1.4) {
+                    if (frequency < 0.5) {
                         const definition = await fetchDefinition(cleanWord);
                         if (definition) {
                             definedWords.add(cleanWord);
