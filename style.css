@@ -232,4 +232,26 @@ button:hover {
     border-radius: 50%;
     background: var(--primary-color);
     cursor: pointer;
+
+#sliderContainer {
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 600px;
+    text-align: center; /* Center align labels */
+}
+
+#sliderLabels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    color: var(--primary-color); /* Use your primary color */
+}
+
+.label {
+    font-size: 0.8rem;
+}
+
 }
