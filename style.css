@@ -175,6 +175,9 @@ button {
     background: var(--primary-color);
     cursor: pointer;
 }
+#sliderLabels .label {
+    font-size: 0.5rem; /* Adjust this value to make the labels smaller or larger as needed */
+}
 
 
 button:hover {
