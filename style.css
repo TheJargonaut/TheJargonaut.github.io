@@ -157,6 +157,17 @@ button {
 .slider:hover {
     opacity: 1;
 }
+#sliderContainer {
+    display: flex;
+    justify-content: space-between;
+    /* Other styles for your slider container */
+}
+
+#sliderLabels .label {
+    font-size: 0.8rem; /* Adjust as needed */
+    text-align: center;
+    width: calc(100% / 5); /* Now, we have 5 labels */
+}
 
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
