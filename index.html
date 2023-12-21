@@ -21,6 +21,20 @@
     </div>
     <div id="sliderContainer">
     <input type="range" min="1" max="10" value="5" class="slider" id="myRange">
+    <div id="sliderLabels">
+        <span class="label">Basic</span>
+        <span class="label">Elementary</span>
+        <span class="label">Intermediate</span>
+        <span class="label">Advanced</span>
+        <span class="label">Expert</span>
+        <span class="label">Fluent</span>
+        <span class="label">Professional</span>
+        <span class="label">Master</span>
+        <span class="label">Scholar</span>
+        <span class="label">Shakespearean</span>
+    </div>
+</div>
+
     </div>
     
     <div id="dialogBox" class="hidden">
@@ -172,6 +186,20 @@
             const resultsDiv = document.getElementById("results");
             resultsDiv.innerHTML += isUncommon ? `<span class="uncommon">${word}</span> ` : `${word} `;
         }
+        document.addEventListener("DOMContentLoaded", function() {
+            var slider = document.getElementById("myRange");
+            var proficiencyLevels = ["Basic", "Elementary", "Intermediate", "Advanced", "Expert", "Fluent", "Professional", "Master", "Scholar", "Shakespearean"];
+            var currentProficiency = document.createElement("p");
+            document.body.appendChild(currentProficiency);
+
+        function updateProficiency() {
+            currentProficiency.textContent = "Current Level: " + proficiencyLevels[slider.value - 1];
+    }
+
+    slider.addEventListener("input", updateProficiency);
+    updateProficiency(); // Set initial value
+});
+
 
         function appendToDefinitionList(word, definition) {
             const li = document.createElement("li");
