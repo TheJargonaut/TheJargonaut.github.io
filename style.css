@@ -1,78 +1,105 @@
 /* Base Styles */
 :root {
-    --primary-color: #e5e5e5; /* Off-white */
-    --bg-color: #1c1c1e;     /* Deep Gray - almost black */
+    --primary-color: #e5e5e5;
+    --secondary-color: #c5c5c5;
+    --accent-color: #a5a5a5;
+    --bg-color: #1c1c1e;
     --font-family: 'Helvetica', sans-serif;
 }
 
-body {
+body, html {
     font-family: var(--font-family);
     color: var(--primary-color);
     margin: 0;
     padding: 0;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: var(--bg-color);
     overflow: hidden;
 }
 
-/* Typewriter Title Animation */
-@keyframes typewriter {
-    0% { width: 0; }
-    100% { width: 100%; }
+/* Infinite Background Animation */
+@keyframes movingBackground {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 100%; }
 }
 
-@keyframes blinkCaret {
-    0%, 100% { border-color: transparent }
-    50% { border-color: var(--primary-color) }
-}
-
-h1 {
-    font-size: 3rem;
-    color: var(--primary-color);
-    border-right: .1em solid;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 0;
-    animation: typewriter 4s steps(40) 1s forwards,
-               blinkCaret 500ms steps(40) infinite;
-}
-
-/* Elegant Paper Background */
 body::before {
     content: '';
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="%23e5e5e5"><text x="50%" y="50%" text-anchor="middle" dy=".35em" font-size="10" font-family="Helvetica, sans-serif">WordSense</text></svg>');
-    background-size: cover;
-    opacity: 0.2;
-    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    background-image: linear-gradient(45deg, var(--bg-color) 25%, var(--accent-color) 25%, var(--accent-color) 50%, var(--bg-color) 50%, var(--bg-color) 75%, var(--accent-color) 75%, var(--accent-color));
+    background-size: 50px 50px;
+    animation: movingBackground 10s linear infinite;
+    z-index: -2;
 }
 
-/* Button Animation */
+/* Title Typewriter Animation */
+@keyframes typewriter {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blinkCaret {
+    from, to { border-color: transparent }
+    50% { border-color: var(--primary-color); }
+}
+
+h1 {
+    position: relative;
+    font-size: 4em;
+    color: var(--primary-color);
+    border-right: 2px solid;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    animation: typewriter 4s steps(40) 1s forwards, blinkCaret 1s step-end infinite;
+}
+
+/* Button Hover Animation */
 button {
     font-family: var(--font-family);
-    background-color: var(--bg-color);
+    background-color: transparent;
     color: var(--primary-color);
     border: 2px solid var(--primary-color);
     padding: 10px 20px;
     margin: 10px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: left 0.5s;
+    z-index: -1;
+}
+
+button:hover::before {
+    left: 0;
 }
 
 button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: var(--bg-color);
 }
 
-/* Slider Animation */
+/* Slider Glow and Move Animation */
 #sliderContainer {
-    animation: slideIn 0.5s ease-in-out, focusPulse 2s infinite ease-in-out;
+    position: relative;
+    width: 80%;
+    max-width: 600px;
 }
 
 .slider {
@@ -80,46 +107,77 @@ button:hover {
     appearance: none;
     width: 100%;
     height: 10px;
-    border-radius: 5px;
-    background: var(--primary-color);
+    background: var(--secondary-color);
     outline: none;
-    transition: box-shadow 0.2s ease;
+    border-radius: 10px;
+    position: relative;
+    z-index: 1;
 }
 
-.slider:hover {
-    box-shadow: 0 0 15px var(--primary-color);
+.slider::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150%;
+    height: 20px;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: -1;
 }
 
-/* Sophisticated Zoom-in Page Animation */
-@keyframes slideIn {
-    from { transform: translateY(100vh); }
-    to { transform: translateY(0); }
+.slider:hover::before {
+    opacity: 0.5;
+    transform: translateX(-50%) scale(1.1);
 }
 
-@keyframes focusPulse {
-    0%, 100% { box-shadow: 0 0 0 0px rgba(229, 229, 229, 0.5); }
-    50% { box-shadow: 0 0 0 20px rgba(229, 229, 229, 0); }
+/* Sophisticated Label Animation */
+.label {
+    font-size: 0.8rem;
+    opacity: 0;
+    animation: fadeIn 3s ease forwards, float 6s ease-in-out infinite;
+    animation-delay: calc(0.5s * var(--i));
 }
 
-/* Labels Animation */
-#sliderLabels {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    animation: fadeInLabels 1s ease-in-out;
-}
-
-@keyframes fadeInLabels {
-    from { opacity: 0; transform: translateY(50px); }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-.label {
-    font-size: 0.8rem;
-    font-family: var(--font-family);
-    transition: color 0.2s ease;
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
-.label:hover {
-    color: #fff;
+/* Interactive Background */
+@keyframes ripple {
+    0% { transform: scale(0); opacity: 0.5; }
+    100% { transform: scale(4); opacity: 0; }
 }
+
+body::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.5s, opacity 0.5s;
+    z-index: -1;
+    animation: ripple 5s infinite;
+}
+
+/* Label Hover Animation */
+.label:hover {
+    animation: none;
+    color: var(--primary-color);
+}
+
+/* Add additional animations as needed */
