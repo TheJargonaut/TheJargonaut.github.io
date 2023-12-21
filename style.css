@@ -132,6 +132,11 @@ button {
     cursor: pointer;
     transition: transform 0.2s, opacity 0.5s;
 }
+
+#currentProficiency {
+    font-weight: bold; /* This makes the text bold */
+}
+
 #sliderContainer {
     position: fixed;
     left: 50%;
