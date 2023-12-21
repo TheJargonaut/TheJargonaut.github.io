@@ -163,12 +163,6 @@ button {
     /* Other styles for your slider container */
 }
 
-#sliderLabels .label {
-    font-size: 0.8rem; /* Adjust as needed */
-    text-align: center;
-    width: calc(100% / 5); /* Now, we have 5 labels */
-}
-
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -189,6 +183,11 @@ button {
 
 button:hover {
     transform: translateY(-5px);
+}
+
+.slider {
+    margin-top: -40px; /* Negative value to move the slider up */
+    /* Keep your other slider styles unchanged */
 }
 
 @keyframes fadeIn {
