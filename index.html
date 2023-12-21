@@ -181,11 +181,11 @@
             document.body.appendChild(currentProficiency);
 
         function updateProficiency() {
-            currentProficiency.textContent = "Current Level: " + proficiencyLevels[slider.value - 1];
+            currentProficiency.textContent = "Current Proficiency: " + proficiencyLevels[slider.value - 1];
     }
 
     slider.addEventListener("input", updateProficiency);
-    updateProficiency(); // Set initial value
+    updateProficiency(4); // Set initial value
 });
 
 
