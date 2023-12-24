@@ -1,13 +1,11 @@
 :root {
-    --primary-color: #000; /* Black for the title and text */
-    --secondary-color: #FFF; /* White for buttons */
-    --background-color: #F0F0F0; /* Light gray for background */
-    --button-hover-color: #D6D6D6; /* Light gray for hover effect */
-    --font-family: 'Times New Roman', serif; /* Classic, elegant font */
+    --primary-color: #00FF00;
+    --secondary-color: #FFFFFF;
+    --bg-color: #000000;
 }
 
 body {
-    font-family: var(--font-family);
+    font-family: 'Fira Code', monospace;
     color: var(--primary-color);
     margin: 0;
     padding: 0;
@@ -16,70 +14,105 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: var(--background-color); /* Placeholder background */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://giffiles.alphacoders.com/209/209037.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 #results {
     width: 90%;
     padding: 20px;
     margin: 20px auto;
-    background-color: var(--secondary-color);
+    background-color: var(--bg-color);
     border: 1px solid var(--primary-color);
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-button {
+#results:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.uncommon {
     color: var(--primary-color);
-    background-color: var(--secondary-color);
-    border: 2px solid var(--primary-color);
-    font-family: var(--font-family);
+    text-shadow: 0 0 12px var(--primary-color);
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
+
+#showDialogButton, #changeProficiencyBtn {
+    color: #39FF14; /* Neon Green */
+    background-color: black;
+    border: 2px solid #39FF14; /* Neon Green border */
+    font-family: 'Fira Code', monospace;
     padding: 10px 20px;
     margin-top: 20px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    transition: transform 0.2s;
 }
 
-/* Hover effect for buttons */
-button:hover {
-    background-color: var(--button-hover-color);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+#showDialogButton:hover, #changeProficiencyBtn:hover {
+    transform: translateY(-5px);
 }
 
-/* Animation for button appearance */
-button {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.5s ease forwards;
+#dialogBox {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid #00ff00;
+    width: 600px;
+    height: 600px;
+    padding: 40px;
+    background-color: #000000;
+    z-index: 10;
+    opacity: 1;  
+    border-radius: 20px;  /* rounded rectangle */
+    transition: opacity 0.5s;
+    font-family: 'Courier New', monospace;
 }
 
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
 }
 
-/* Button focus animation */
-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--button-hover-color);
+.header {
+    font-weight: bold;
+    text-shadow: 0 0 5px #00ff00;
 }
 
-/* Title Animation Fix */
+.cursor {
+    border-left: 2px solid #00ff00;
+    animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+    100% {
+        opacity: 0;
+    }
+}
+
 h1 {
-    font-size: 3rem;
+    font-size: 4rem;
+    margin-bottom: 1rem;
     color: var(--primary-color);
+    border-right: .15em solid var(--primary-color);
     white-space: nowrap;
     overflow: hidden;
-    border-right: .1em solid var(--primary-color);
-    animation: typing 2s steps(30, end), blink-caret 1s step-end infinite;
+    width: 9ch;
+    animation: typing 3s steps(9, end), blink-caret .5s step-end infinite;
 }
 
 @keyframes typing {
     from { width: 0 }
-    to { width: 100% }
+    to { width: 9ch }
 }
 
 @keyframes blink-caret {
@@ -87,7 +120,18 @@ h1 {
     50% { border-color: var(--primary-color); }
 }
 
-/* Slider and Labels */
+button {
+    opacity: 0;
+    font-family: 'Fira Code', monospace;
+    animation: fadeIn 1s forwards 3.5s;
+    background-color: var(--primary-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: var(--bg-color);
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.5s;
+}
 #sliderContainer {
     position: fixed;
     left: 50%;
@@ -103,31 +147,45 @@ h1 {
     width: 100%;
     height: 15px;
     border-radius: 5px;
-    background: var(--primary-color);
+    background: #222; /* Dark background */
     outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
     transition: opacity .2s;
 }
 
 .slider:hover {
-    opacity: 0.8;
+    opacity: 1;
 }
-
-.slider-labels {
+#sliderContainer {
     display: flex;
     justify-content: space-between;
-    color: var(--primary-color);
+    /* Other styles for your slider container */
 }
 
-.slider-label {
-    font-size: 0.75em;
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
 }
 
-/* Enhanced Current Proficiency Label */
-#currentProficiency {
-    font-weight: bold;
-    color: var(--primary-color);
-    background-color: var(--secondary-color);
-    padding: 5px 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+}
+
+button:hover {
+    transform: translateY(-5px);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(1rem); }
+    to   { opacity: 1; transform: translate(0); }
 }
