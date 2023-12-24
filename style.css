@@ -45,7 +45,7 @@ body {
 }
 
 #showDialogButton, #changeProficiencyBtn {
-    color: #39FF14; /* Neon Green */
+    color: #000000; /* Neon Green */
     background-color: black;
     border: 2px solid #39FF14; /* Neon Green border */
     font-family: 'Fira Code', monospace;
@@ -85,11 +85,11 @@ body {
 
 .header {
     font-weight: bold;
-    text-shadow: 0 0 5px #00ff00;
+    text-shadow: 0 0 5px #000000;
 }
 
 .cursor {
-    border-left: 2px solid #00ff00;
+    border-left: 2px solid #000000;
     animation: blink 0.5s infinite;
 }
 
@@ -122,7 +122,7 @@ h1 {
 
 button {
     opacity: 0;
-    font-family: 'Fira Code', monospace;
+    font-family: 'Times New Roman', monospace;
     animation: fadeIn 1s forwards 3.5s;
     background-color: var(--primary-color);
     border: none;
