@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WordSense Corp.</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
     <h1>WordSense</h1>
@@ -20,9 +18,8 @@
         <button id="showDialogButton">What's WordSense?</button>
     </div>
     <div id="sliderContainer">
-    <input type="range" min="1" max="5" value="3" class="slider" id="myRange">
-    </div>
-
+        <input type="range" min="1" max="5" value="3" class="slider" id="myRange">
+        <p id="proficiencyDisplay"></p> <!-- Proficiency Level Display -->
     </div>
     
     <div id="dialogBox" class="hidden">
@@ -41,216 +38,199 @@
             if (Notification.permission !== "granted") {
                 Notification.requestPermission();
             }
-        });
 
-        // Initialize variables
-        let recognition;
-        let isRecording = false;
-        let realTimeNotify = false;
-        let lastWordTimestamp = 0;
-        let definedWords = new Set();
-        let wordBuffer = [];
+            // Initialize variables
+            let recognition;
+            let isRecording = false;
+            let realTimeNotify = false;
+            let lastWordTimestamp = 0;
+            let definedWords = new Set();
+            let wordBuffer = [];
+            let zipfThreshold = 3; // Initial Zipf frequency threshold
 
-        // Function definitions
-        function stripPunctuation(word) {
-            return word.toLowerCase().replace(/[\W_]+/g, "");
-        }
+            // Add slider event listener for Zipf frequency threshold adjustment
+            var slider = document.getElementById("myRange");
+            var proficiencyDisplay = document.getElementById("proficiencyDisplay");
 
-        function toggleTranscription() {
-            const resultsDiv = document.getElementById('results');
-            const isHidden = resultsDiv.style.display === 'none';
-            resultsDiv.style.display = isHidden ? 'block' : 'none';
-            document.getElementById('toggleTranscription').textContent = isHidden ? 'Hide Transcription' : 'Show Transcription';
-        }
+            slider.addEventListener("input", function () {
+                zipfThreshold = parseFloat(slider.value);
+                updateProficiencyDisplay();
+            });
 
-        async function toggleRecording() {
-            if (isRecording) {
-                recognition.stop();
-                document.getElementById("recordingButton").textContent = "🎙 Start Recording";
-            } else {
-                await startListening();
-                document.getElementById("recordingButton").textContent = "🎙 Stop Recording";
+            function updateProficiencyDisplay() {
+                const proficiencyLevels = ["Basic", "Elementary", "Intermediate", "Advanced", "Expert"];
+                proficiencyDisplay.textContent = "Current Proficiency: " + proficiencyLevels[slider.value - 1];
             }
-            isRecording = !isRecording;
-        }
 
-      document.addEventListener('DOMContentLoaded', function () {
-    if (Notification.permission !== "granted") {
-        Notification.requestPermission();
-    }
+            // Initialize proficiency display
+            updateProficiencyDisplay();
 
-    // Initialize variables
-    let recognition;
-    let isRecording = false;
-    let realTimeNotify = false;
-    let lastWordTimestamp = 0;
-    let definedWords = new Set();
-    let wordBuffer = [];
-    let zipfThreshold = 3; // Initial Zipf frequency threshold
+            // Function definitions
+            function stripPunctuation(word) {
+                return word.toLowerCase().replace(/[\W_]+/g, "");
+            }
 
-    // Add slider event listener for Zipf frequency threshold adjustment
-    var slider = document.getElementById("myRange");
-    slider.addEventListener("input", function () {
-        zipfThreshold = parseFloat(slider.value);
-    });
+            function toggleTranscription() {
+                const resultsDiv = document.getElementById('results');
+                const isHidden = resultsDiv.style.display === 'none';
+                resultsDiv.style.display = isHidden ? 'block' : 'none';
+                document.getElementById('toggleTranscription').textContent = isHidden ? 'Hide Transcription' : 'Show Transcription';
+            }
 
-    // Function to strip punctuation from a word
-    function stripPunctuation(word) {
-        return word.toLowerCase().replace(/[\W_]+/g, "");
-    }
-
-    // Function to toggle transcription visibility
-    function toggleTranscription() {
-        const resultsDiv = document.getElementById('results');
-        const isHidden = resultsDiv.style.display === 'none';
-        resultsDiv.style.display = isHidden ? 'block' : 'none';
-        document.getElementById('toggleTranscription').textContent = isHidden ? 'Hide Transcription' : 'Show Transcription';
-    }
-
-    // Function to start or stop recording
-    async function toggleRecording() {
-        if (isRecording) {
-            recognition.stop();
-            document.getElementById("recordingButton").textContent = "🎙 Start Recording";
-        } else {
-            await startListening();
-            document.getElementById("recordingButton").textContent = "🎙 Stop Recording";
-        }
-        isRecording = !isRecording;
-    }
-
-    // Function to start listening
-    async function startListening() {
-        recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.interimResults = false;
-        recognition.continuous = true;
-
-        recognition.onresult = async function (event) {
-            for (let i = event.resultIndex; i < event.results.length; ++i) {
-                if (event.results[i].isFinal) {
-                    const finalizedWords = event.results[i][0].transcript.trim().split(" ");
-                    lastWordTimestamp = Date.now();
-                    wordBuffer = wordBuffer.concat(finalizedWords);
-                    await processBufferedWords();
+            async function toggleRecording() {
+                if (isRecording) {
+                    recognition.stop();
+                    document.getElementById("recordingButton").textContent = "🎙 Start Recording";
+                } else {
+                    await startListening();
+                    document.getElementById("recordingButton").textContent = "🎙 Stop Recording";
                 }
+                isRecording = !isRecording;
             }
-        };
 
-        recognition.onend = () => {
-            document.getElementById('recordingButton').textContent = '🎙 Start Recording';
-        };
+            async function startListening() {
+                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.interimResults = false;
+                recognition.continuous = true;
 
-        recognition.start();
-        document.getElementById("notifyButton").disabled = false;
-        document.getElementById("realTimeNotifyButton").disabled = false;
-    }
+                recognition.onresult = async function (event) {
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            const finalizedWords = event.results[i][0].transcript.trim().split(" ");
+                            lastWordTimestamp = Date.now();
+                            wordBuffer = wordBuffer.concat(finalizedWords);
+                            await processBufferedWords();
+                        }
+                    }
+                };
 
-    // Function to get the lemma of a word
-    async function getLemma(word) {
-        const response = await fetch('https://twinword-lemmatizer1.p.rapidapi.com/extract/', {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded',
-                'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb', // Your RapidAPI Key
-                'X-RapidAPI-Host': 'twinword-lemmatizer1.p.rapidapi.com'
-            },
-            body: new URLSearchParams({ text: word })
-        });
-        const data = await response.json();
-        return data.lemma || word; // Default to the original word if no lemma is found
-    }
+                recognition.onend = () => {
+                    document.getElementById('recordingButton').textContent = '🎙 Start Recording';
+                };
 
-    // Function to get word frequency using WordsAPI
-    async function getWordFrequency(word) {
-        const response = await fetch(`https://wordsapiv1.p.mashape.com/words/${word}/frequency`, {
-            method: 'GET'
-        });
-        const data = await response.json();
-        return data.frequency.zipf || 0;
-    }
+                recognition.start();
+                document.getElementById("notifyButton").disabled = false;
+                document.getElementById("realTimeNotifyButton").disabled = false;
+            }
 
-    // Function to fetch a word's definition
-    async function fetchDefinition(word) {
-        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${word}`);
-        const data = await response.json();
-        return data[0]?.meanings[0]?.definitions[0]?.definition || null;
-    }
+            async function getLemma(word) {
+                const response = await fetch('https://twinword-lemmatizer1.p.rapidapi.com/extract/', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/x-www-form-urlencoded',
+                        'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb', // Replace with your actual API key
+                        'X-RapidAPI-Host': 'twinword-lemmatizer1.p.rapidapi.com'
+                    },
+                    body: new URLSearchParams({ text: word })
+                });
+                const data = await response.json();
+                return data.lemma || word; // Default to the original word if no lemma is found
+            }
 
-    // Function to process buffered words
-    async function processBufferedWords() {
-        while (wordBuffer.length > 0) {
-            const word = wordBuffer.shift();
-            const cleanWord = stripPunctuation(word);
-            const lemma = await getLemma(cleanWord);
+            async function getWordFrequency(word) {
+                const response = await fetch(`https://wordsapiv1.p.mashape.com/words/${word}/frequency`, {
+                    method: 'GET'
+                });
+                const data = await response.json();
+                return data.frequency.zipf || 0;
+            }
 
-            if (!definedWords.has(cleanWord)) {
-                const frequency = await getWordFrequency(lemma);
+            async function fetchDefinition(word) {
+                const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${word}`);
+                const data = await response.json();
+                return data[0]?.meanings[0]?.definitions[0]?.definition || null;
+            }
 
-                if (frequency < zipfThreshold) {
-                    const definition = await fetchDefinition(cleanWord);
-                    if (definition) {
-                        definedWords.add(cleanWord);
-                        appendToResults(word, true);
-                        appendToDefinitionList(cleanWord, definition);
-                        if (realTimeNotify) {
-                            new Notification(word, { body: definition });
+            async function processBufferedWords() {
+                while (wordBuffer.length > 0) {
+                    const word = wordBuffer.shift();
+                    const cleanWord = stripPunctuation(word);
+                    const lemma = await getLemma(cleanWord);
+
+                    if (!definedWords.has(cleanWord)) {
+                        const frequency = await getWordFrequency(lemma);
+
+                        if (frequency < zipfThreshold) {
+                            const definition = await fetchDefinition(cleanWord);
+                            if (definition) {
+                                definedWords.add(cleanWord);
+                                appendToResults(word, true);
+                                appendToDefinitionList(cleanWord, definition);
+                                if (realTimeNotify) {
+                                    new Notification(word, { body: definition });
+                                }
+                            } else {
+                                appendToResults(word, false);
+                            }
+                        } else {
+                            appendToResults(word, false);
                         }
                     } else {
                         appendToResults(word, false);
                     }
-                } else {
-                    appendToResults(word, false);
                 }
-            } else {
-                appendToResults(word, false);
             }
-        }
-    }
 
-    // Function to append results to the display
-    function appendToResults(word, isUncommon) {
-        const resultsDiv = document.getElementById("results");
-        resultsDiv.innerHTML += isUncommon ? `<span class="uncommon">${word}</span> ` : `${word} `;
-    }
+            function appendToResults(word, isUncommon) {
+                const resultsDiv = document.getElementById("results");
+                resultsDiv.innerHTML += isUncommon ? `<span class="uncommon">${word}</span> ` : `${word} `;
+            }
 
-    // Function to append definitions to the list
-    function appendToDefinitionList(word, definition) {
-        const li = document.createElement("li");
-        li.innerHTML = `<strong>${capitalizeFirstLetter(word)}</strong>: ${definition}`;
-        document.getElementById("definition").appendChild(li);
-    }
+            function appendToDefinitionList(word, definition) {
+                const li = document.createElement("li");
+                li.innerHTML = `<strong>${capitalizeFirstLetter(word)}</strong>: ${definition}`;
+                document.getElementById("definition").appendChild(li);
+            }
 
-    // Function to capitalize the first letter of a string
-    function capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
 
-    // Function to send notifications
-    function sendNotification() {
-        if (Date.now() - lastWordTimestamp <= 10000) {
-            definedWords.forEach(word => {
-                fetchDefinition(word).then(definition => {
-                    if (definition) {
-                        new Notification(capitalizeFirstLetter(word), { body: definition });
-                    }
-                });
+            function sendNotification() {
+                if (Date.now() - lastWordTimestamp <= 10000) {
+                    definedWords.forEach(word => {
+                        fetchDefinition(word).then(definition => {
+                            if (definition) {
+                                new Notification(capitalizeFirstLetter(word), { body: definition });
+                            }
+                        });
+                    });
+                }
+            }
+
+            function toggleRealTimeNotifications() {
+                realTimeNotify = !realTimeNotify;
+                document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
+            }
+
+            document.getElementById('showDialogButton').addEventListener('click', function () {
+                const dialogBox = document.getElementById('dialogBox');
+                dialogBox.classList.remove('hidden');
+                typeText();
             });
-        }
-    }
 
-    // Function to toggle real-time notifications
-    function toggleRealTimeNotifications() {
-        realTimeNotify = !realTimeNotify;
-        document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
-    }
+            document.getElementById('closeButton').addEventListener('click', function () {
+                const dialogBox = document.getElementById('dialogBox');
+                dialogBox.classList.add('hidden');
+            });
 
-    // Your existing event listeners and other JavaScript functionalities
-    // [Add here any other JavaScript functionalities that are part of your application]
-});
+            function typeText() {
+                const textElement = document.getElementById('text');
+                const text = 'Ever been in a meeting or interview with a pompous old prig who thinks he invented the English language?We all know that guy. "Despite the epistemological quandaries presented by the dichotomy between constructivist ontology and positivist empiricism, the confluence of post-structuralist theories and quantum mechanics beckons scholars to reevaluate the hermeneutic frameworks that underpin our understanding of intersubjective reality." What did he say? You might have just lost the job because of a pretentious wannabe Brit. And whipping out your phone to Google a word mid-interview might not be the best idea, would it? Well, WordSense was created for these very situations. In what will eventually be ported to Apple Watch, WordSense will be able to define words in the moment, to your wrist, with a double tap of your fingers on Series 9 and Ultra 2 onwards. Sneak a peek at your wrist and save yourself from looking like a dum-dum: Welcome to WordSense.'; // Add the rest of your text here
+                let index = 0;
 
+                function addCharacter() {
+                    if (index < text.length) {
+                        textElement.innerHTML += text.charAt(index);
+                        index++;
+                        setTimeout(addCharacter, 50); // Adjust the speed as needed
+                    }
+                }
 
+                addCharacter();
+            }
+        });
     </script>
 
 </body>
-
 </html>
