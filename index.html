@@ -139,56 +139,61 @@ async function processBufferedWords() {
         const cleanWord = stripPunctuation(originalWord);
 
         if (!definedWords.has(cleanWord)) {
-            // Fetch the root word using Words API
-            const rootWordData = await fetch(`https://twinword-lemmatizer1.p.rapidapi.com/extract/?text=${cleanWord}`, {
-                method: 'GET',
-                headers: {
-                    'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb',
-                    'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
-                }
-            });
-
-            if (rootWordData.status === 200) {
-                const rootWordJSON = await rootWordData.json();
-                const rootWord = rootWordJSON.root || cleanWord;
-
-                // Fetch the Zipf value for the root word
-                const frequencyData = await fetch(`https://wordsapiv1.p.rapidapi.com/words/${rootWord}/frequency`, {
+            try {
+                // Fetch the root word using Words API
+                const rootWordData = await fetch(`https://twinword-lemmatizer1.p.rapidapi.com/extract/?text=${cleanWord}`, {
                     method: 'GET',
                     headers: {
                         'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb',
-                        'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
+                        'X-RapidAPI-Host': 'twinword-lemmatizer1.p.rapidapi.com' // Corrected the host
                     }
                 });
 
-                if (frequencyData.status === 200) {
-                    const frequencyJSON = await frequencyData.json();
-                    const zipf = parseFloat(frequencyJSON.frequency?.zipf || 0);
+                if (rootWordData.status === 200) {
+                    const rootWordJSON = await rootWordData.json();
+                    const rootWord = rootWordJSON.lemma || cleanWord; // Use 'lemma' instead of 'root'
 
-                    if (zipf < 3.2) {
-                        // Root word is uncommon, display the original word's definition
-                        const definition = await fetchDefinition(cleanWord);
-                        if (definition) {
-                            definedWords.add(cleanWord);
-                            appendToResults(originalWord, true);
-                            appendToDefinitionList(cleanWord, definition);
-                            if (realTimeNotify) {
-                                new Notification(originalWord, { body: definition });
+                    // Fetch the Zipf value for the root word
+                    const frequencyData = await fetch(`https://wordsapiv1.p.rapidapi.com/words/${rootWord}/frequency`, {
+                        method: 'GET',
+                        headers: {
+                            'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb',
+                            'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
+                        }
+                    });
+
+                    if (frequencyData.status === 200) {
+                        const frequencyJSON = await frequencyData.json();
+                        const zipf = parseFloat(frequencyJSON.frequency?.zipf || 0);
+
+                        if (zipf < 3.2) {
+                            // Root word is uncommon, display the original word's definition
+                            const definition = await fetchDefinition(cleanWord);
+                            if (definition) {
+                                definedWords.add(cleanWord);
+                                appendToResults(originalWord, true);
+                                appendToDefinitionList(cleanWord, definition);
+                                if (realTimeNotify) {
+                                    new Notification(originalWord, { body: definition });
+                                }
+                            } else {
+                                appendToResults(originalWord, false);
                             }
                         } else {
                             appendToResults(originalWord, false);
                         }
                     } else {
+                        // Handle API error for fetching root word frequency data
+                        console.error('Error fetching root word frequency data');
                         appendToResults(originalWord, false);
                     }
                 } else {
-                    // Handle API error for fetching root word frequency data
-                    console.error('Error fetching root word frequency data');
+                    // Handle API error for fetching root word
+                    console.error('Error fetching root word data');
                     appendToResults(originalWord, false);
                 }
-            } else {
-                // Handle API error for fetching root word
-                console.error('Error fetching root word data');
+            } catch (error) {
+                console.error('Error:', error);
                 appendToResults(originalWord, false);
             }
         } else {
