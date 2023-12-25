@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WordSense Corp.</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <h1>WordSense</h1>
 
     <div>
         <button id="recordingButton" onclick="toggleRecording()">🎙 Start Recording</button>
-        <button id="notifyButton" onclick="sendNotification()" disabled>Notify Now</button>
+        <button id="notifyButton" onclick="sendNotification()" disabled>Notify</button>
         <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
-        <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-Time Notify</button>
+        <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
         <button id="showDialogButton">What's WordSense?</button>
     </div>
     <div id="sliderContainer">
-        <input type="range" min="1" max="5" value="3" class="slider" id="myRange">
-        <p id="proficiencyDisplay"></p> <!-- Proficiency Level Display -->
+    <input type="range" min="1" max="5" value="3" class="slider" id="myRange">
+    </div>
+
     </div>
     
     <div id="dialogBox" class="hidden">
@@ -38,196 +41,211 @@
             if (Notification.permission !== "granted") {
                 Notification.requestPermission();
             }
+        });
 
-            let recognition;
-            let isRecording = false;
-            let realTimeNotify = false;
-            let lastWordTimestamp = 0;
-            let definedWords = new Set();
-            let wordBuffer = [];
-            let zipfThreshold = 3;
+        // Initialize variables
+        let recognition;
+        let isRecording = false;
+        let realTimeNotify = false;
+        let lastWordTimestamp = 0;
+        let definedWords = new Set();
+        let wordBuffer = [];
 
-            var slider = document.getElementById("myRange");
-            var proficiencyDisplay = document.getElementById("proficiencyDisplay");
-            var proficiencyLevels = ["Basic", "Elementary", "Intermediate", "Advanced", "Expert", "Fluent", "Professional", "Master", "Scholar", "Shakespearean"];
+        // Function definitions
+        function stripPunctuation(word) {
+            return word.toLowerCase().replace(/[\W_]+/g, "");
+        }
 
-            slider.addEventListener("input", function () {
-                zipfThreshold = parseFloat(slider.value);
-                updateProficiencyDisplay();
-            });
+        function toggleTranscription() {
+            const resultsDiv = document.getElementById('results');
+            const isHidden = resultsDiv.style.display === 'none';
+            resultsDiv.style.display = isHidden ? 'block' : 'none';
+            document.getElementById('toggleTranscription').textContent = isHidden ? 'Hide Transcription' : 'Show Transcription';
+        }
 
-            function updateProficiencyDisplay() {
-                proficiencyDisplay.textContent = "Current Level: " + proficiencyLevels[slider.value - 1];
+        async function toggleRecording() {
+            if (isRecording) {
+                recognition.stop();
+                document.getElementById("recordingButton").textContent = "🎙 Start Recording";
+            } else {
+                await startListening();
+                document.getElementById("recordingButton").textContent = "🎙 Stop Recording";
             }
+            isRecording = !isRecording;
+        }
 
-            updateProficiencyDisplay();
-
-            function stripPunctuation(word) {
-                return word.toLowerCase().replace(/[\W_]+/g, "");
-            }
-
-            function toggleTranscription() {
-                const resultsDiv = document.getElementById('results');
-                resultsDiv.style.display = resultsDiv.style.display === 'none' ? 'block' : 'none';
-                document.getElementById('toggleTranscription').textContent = resultsDiv.style.display === 'none' ? 'Show Transcription' : 'Hide Transcription';
-            }
-
-            async function toggleRecording() {
-                if (isRecording) {
-                    recognition.stop();
-                    document.getElementById("recordingButton").textContent = "🎙 Start Recording";
-                } else {
-                    await startListening();
-                    document.getElementById("recordingButton").textContent = "🎙 Stop Recording";
-                }
-                isRecording = !isRecording;
-            }
-
-            async function startListening() {
-                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-                recognition.interimResults = false;
-                recognition.continuous = true;
-
-                recognition.onresult = async function (event) {
-                    for (let i = event.resultIndex; i < event.results.length; ++i) {
-                        if (event.results[i].isFinal) {
-                            const finalizedWords = event.results[i][0].transcript.trim().split(" ");
-                            lastWordTimestamp = Date.now();
-                            wordBuffer = wordBuffer.concat(finalizedWords);
-                            await lemmatizeAndProcessWords();
-                        }
-                    }
-                };
-
-                recognition.onend = () => {
-                    document.getElementById('recordingButton').textContent = '🎙 Start Recording';
-                };
-
-                recognition.start();
-                document.getElementById("notifyButton").disabled = false;
-                document.getElementById("realTimeNotifyButton").disabled = false;
-            }
-
-            async function getLemma(word) {
-                const response = await fetch('https://twinword-lemmatizer1.p.rapidapi.com/extract/', {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/x-www-form-urlencoded',
-                        'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb',
-                        'X-RapidAPI-Host': 'twinword-lemmatizer1.p.rapidapi.com'
-                    },
-                    body: new URLSearchParams({ text: word })
-                });
-                const data = await response.json();
-                return data.lemma || word;
-            }
-
-            async function getWordFrequency(word) {
-                const response = await fetch(`https://wordsapiv1.p.mashape.com/words/${word}/frequency`, {
-                    method: 'GET'
-                });
-                const data = await response.json();
-                return data.frequency.zipf || 0;
-            }
-
-            async function fetchDefinition(word) {
-                const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${word}`);
-                const data = await response.json();
-                return data[0]?.meanings[0]?.definitions[0]?.definition || null;
-            }
-
-            async function lemmatizeAndProcessWords() {
-                while (wordBuffer.length > 0) {
-                    const word = wordBuffer.shift();
-                    const cleanWord = stripPunctuation(word);
-                    const lemma = await getLemma(cleanWord);
-                    await checkWordAndDefine(lemma, cleanWord);
-                }
-            }
-
-            async function checkWordAndDefine(lemma, word) {
-                const frequency = await getWordFrequency(lemma);
-
-                if (frequency < zipfThreshold) {
-                    const definition = await fetchDefinition(word);
-                    if (definition) {
-                        definedWords.add(word);
-                        appendToResults(word, true);
-                        appendToDefinitionList(word, definition);
-                        if (realTimeNotify) {
-                            new Notification(word, { body: definition });
-                        }
-                    } else {
-                        appendToResults(word, false);
-                    }
-                } else {
-                    appendToResults(word, false);
-                }
-            }
-
-            function appendToResults(word, isUncommon) {
-                const resultsDiv = document.getElementById("results");
-                resultsDiv.innerHTML += isUncommon ? `<span class="uncommon">${word}</span> ` : `${word} `;
-            }
-
-            function appendToDefinitionList(word, definition) {
-                const li = document.createElement("li");
-                li.innerHTML = `<strong>${capitalizeFirstLetter(word)}</strong>: ${definition}`;
-                document.getElementById("definition").appendChild(li);
-            }
-
-            function capitalizeFirstLetter(string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
-            }
-
-            function sendNotification() {
-                if (Date.now() - lastWordTimestamp <= 10000) {
-                    definedWords.forEach(word => {
-                        fetchDefinition(word).then(definition => {
-                            if (definition) {
-                                new Notification(capitalizeFirstLetter(word), { body: definition });
-                            }
-                        });
-                    });
-                }
-            }
-
-            function toggleRealTimeNotifications() {
-                realTimeNotify = !realTimeNotify;
-                document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
-            }
-
+        document.addEventListener('DOMContentLoaded', function () {
             const showDialogButton = document.getElementById('showDialogButton');
             const dialogBox = document.getElementById('dialogBox');
             const closeButton = document.getElementById('closeButton');
             const textElement = document.getElementById('text');
-            const text = 'Ever been in a meeting or interview with a pompous old prig who thinks he invented the English language? We all know that guy...';
+
+            // Define the text to be typed
+            const text = 'Ever been in a meeting or interview with a pompous old prig who thinks he invented the English language? We all know that guy. "Despite the epistemological quandaries presented by the dichotomy between constructivist ontology and positivist empiricism, the confluence of post-structuralist theories and quantum mechanics beckons scholars to reevaluate the hermeneutic frameworks that underpin our understanding of intersubjective reality." What did he say? You might have just lost the job because of a pretentious wannabe Brit. And whipping out your phone to Google a word mid-interview might not be the best idea, would it? Well, WordSense was created for these very situations. In what will eventually be ported to Apple Watch, WordSense will be able to define words in the moment, to your wrist, with a double tap of your fingers on Series 9 and Ultra 2 onwards. Sneak a peek at your wrist and save yourself from looking like a dum-dum: Welcome to WordSense.';
+            let index = 0;
 
             showDialogButton.addEventListener('click', function () {
+                dialogBox.style.opacity = '1';
                 dialogBox.classList.remove('hidden');
                 typeText();
             });
 
             closeButton.addEventListener('click', function () {
-                dialogBox.classList.add('hidden');
+                dialogBox.style.opacity = '0';
+                setTimeout(() => {
+                    dialogBox.classList.add('hidden');
+                }, 500);
             });
 
             function typeText() {
-                let index = 0;
-                textElement.innerHTML = ''; // Clear existing text
-
-                function addCharacter() {
-                    if (index < text.length) {
-                        textElement.innerHTML += text.charAt(index);
-                        index++;
-                        setTimeout(addCharacter, 50);
-                    }
+                if (index < text.length) {
+                    textElement.innerHTML += text.charAt(index);
+                    index++;
+                    setTimeout(typeText, 50);
                 }
-
-                addCharacter();
             }
         });
+
+
+        async function startListening() {
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.interimResults = false;
+            recognition.continuous = true;
+
+            recognition.onresult = async function (event) {
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        const finalizedWords = event.results[i][0].transcript.trim().split(" ");
+                        lastWordTimestamp = Date.now();
+                        wordBuffer = wordBuffer.concat(finalizedWords);
+                        await processBufferedWords();
+                    }
+                }
+            };
+
+            recognition.onend = () => {
+                document.getElementById('recordingButton').textContent = '🎙 Start Recording';
+            };
+
+            recognition.start();
+            document.getElementById("notifyButton").disabled = false;
+            document.getElementById("realTimeNotifyButton").disabled = false;
+        }
+
+        async function processBufferedWords() {
+    while (wordBuffer.length > 0) {
+        const word = wordBuffer.shift();
+        const cleanWord = stripPunctuation(word);
+
+        if (!definedWords.has(cleanWord)) {
+            // Get the lemma of the word
+            const lemma = await getLemma(cleanWord);
+
+            // Get the Zipf frequency value from WordsAPI
+            const frequency = await getWordFrequency(lemma);
+
+            // Check if the frequency is below the threshold
+            if (frequency < 0.9) {
+                // Fetch the definition
+                const definition = await fetchDefinition(cleanWord);
+                if (definition) {
+                    definedWords.add(cleanWord);
+                    appendToResults(word, true);
+                    appendToDefinitionList(cleanWord, definition);
+                    if (realTimeNotify) {
+                        new Notification(word, { body: definition });
+                    }
+                } else {
+                    appendToResults(word, false);
+                }
+            } else {
+                appendToResults(word, false);
+            }
+        } else {
+            appendToResults(word, false);
+        }
+    }
+}
+async function getLemma(word) {
+    const response = await fetch('https://twinword-lemmatizer1.p.rapidapi.com/extract/', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb',
+            'X-RapidAPI-Host': 'twinword-lemmatizer1.p.rapidapi.com'
+        },
+        body: new URLSearchParams({ text: word })
+    });
+    const data = await response.json();
+    return data.lemma || word;
+}
+
+async function getWordFrequency(word) {
+    const response = await fetch(`https://wordsapiv1.p.mashape.com/words/${word}/frequency`, {
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Host': 'wordsapiv1.p.mashape.com'
+        }
+    });
+    const data = await response.json();
+    return data.frequency.zipf || 0;
+}
+
+
+        async function fetchDefinition(word) {
+            const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${word}`);
+            const data = await response.json();
+            return data[0]?.meanings[0]?.definitions[0]?.definition || null;
+        }
+
+        function appendToResults(word, isUncommon) {
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML += isUncommon ? `<span class="uncommon">${word}</span> ` : `${word} `;
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            var slider = document.getElementById("myRange");
+            var proficiencyLevels = ["Basic", "Elementary", "Intermediate", "Advanced", "Expert", "Fluent", "Professional", "Master", "Scholar", "Shakespearean"];
+            var currentProficiency = document.createElement("p");
+            document.body.appendChild(currentProficiency);
+
+        function updateProficiency() {
+            currentProficiency.textContent = "Current Level: " + proficiencyLevels[slider.value - 1];
+    }
+
+    slider.addEventListener("input", updateProficiency);
+    updateProficiency(); // Set initial value
+});
+
+
+        function appendToDefinitionList(word, definition) {
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${capitalizeFirstLetter(word)}</strong>: ${definition}`;
+            document.getElementById("definition").appendChild(li);
+        }
+
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function sendNotification() {
+            if (Date.now() - lastWordTimestamp <= 10000) {
+                definedWords.forEach(word => {
+                    fetchDefinition(word).then(definition => {
+                        if (definition) {
+                            new Notification(capitalizeFirstLetter(word), { body: definition });
+                        }
+                    });
+                });
+            }
+        }
+
+        function toggleRealTimeNotifications() {
+            realTimeNotify = !realTimeNotify;
+            document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
+        }
+
     </script>
 
 </body>
+
 </html>
