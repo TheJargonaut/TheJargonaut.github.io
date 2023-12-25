@@ -165,7 +165,7 @@ async function processBufferedWords() {
                     const frequencyJSON = await frequencyData.json();
                     const zipf = parseFloat(frequencyJSON.frequency?.zipf || 0);
 
-                    if (zipf < 2) {
+                    if (zipf < 3.2) {
                         // Root word is uncommon, display the original word's definition
                         const definition = await fetchDefinition(cleanWord);
                         if (definition) {
