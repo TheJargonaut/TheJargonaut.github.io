@@ -140,7 +140,7 @@ async function processBufferedWords() {
 
         if (!definedWords.has(cleanWord)) {
             // Fetch the root word using Words API
-            const rootWordData = await fetch(`https://wordsapiv1.p.rapidapi.com/words/${cleanWord}/root`, {
+            const rootWordData = await fetch(`https://twinword-lemmatizer1.p.rapidapi.com/extract/?text=${cleanWord}`, {
                 method: 'GET',
                 headers: {
                     'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb',
