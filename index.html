@@ -11,15 +11,15 @@
     <h1>WordSense</h1>
 
     <div>
-        <button id="recordingButton" onclick="toggleRecording()">🎙 Start Recording</button>
-        <button id="notifyButton" onclick="sendNotification()" disabled>Notify Now</button>
-        <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
-        <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-Time Notify</button>
+        <button id="recordingButton">🎙 Start Recording</button>
+        <button id="notifyButton" disabled>Notify Now</button>
+        <button id="toggleTranscription">Show Transcription</button>
+        <button id="realTimeNotifyButton" disabled>Real-Time Notify</button>
         <button id="showDialogButton">What's WordSense?</button>
     </div>
     <div id="sliderContainer">
         <input type="range" min="1" max="5" value="3" class="slider" id="myRange">
-        <p id="proficiencyDisplay"></p> <!-- Proficiency Level Display -->
+        <p id="proficiencyDisplay"></p>
     </div>
     
     <div id="dialogBox" class="hidden">
@@ -39,16 +39,14 @@
                 Notification.requestPermission();
             }
 
-            // Initialize variables
             let recognition;
             let isRecording = false;
             let realTimeNotify = false;
             let lastWordTimestamp = 0;
             let definedWords = new Set();
             let wordBuffer = [];
-            let zipfThreshold = 3; // Initial Zipf frequency threshold
+            let zipfThreshold = 3;
 
-            // Add slider event listener for Zipf frequency threshold adjustment
             var slider = document.getElementById("myRange");
             var proficiencyDisplay = document.getElementById("proficiencyDisplay");
 
@@ -62,30 +60,27 @@
                 proficiencyDisplay.textContent = "Current Proficiency: " + proficiencyLevels[slider.value - 1];
             }
 
-            // Initialize proficiency display
             updateProficiencyDisplay();
 
-            // Function definitions
             function stripPunctuation(word) {
                 return word.toLowerCase().replace(/[\W_]+/g, "");
             }
 
             function toggleTranscription() {
                 const resultsDiv = document.getElementById('results');
-                const isHidden = resultsDiv.style.display === 'none';
-                resultsDiv.style.display = isHidden ? 'block' : 'none';
-                document.getElementById('toggleTranscription').textContent = isHidden ? 'Hide Transcription' : 'Show Transcription';
+                resultsDiv.style.display = resultsDiv.style.display === 'none' ? 'block' : 'none';
+                document.getElementById('toggleTranscription').textContent = resultsDiv.style.display === 'none' ? 'Show Transcription' : 'Hide Transcription';
             }
 
             async function toggleRecording() {
                 if (isRecording) {
                     recognition.stop();
+                    isRecording = false;
                     document.getElementById("recordingButton").textContent = "🎙 Start Recording";
                 } else {
                     await startListening();
                     document.getElementById("recordingButton").textContent = "🎙 Stop Recording";
                 }
-                isRecording = !isRecording;
             }
 
             async function startListening() {
@@ -105,10 +100,12 @@
                 };
 
                 recognition.onend = () => {
+                    isRecording = false;
                     document.getElementById('recordingButton').textContent = '🎙 Start Recording';
                 };
 
                 recognition.start();
+                isRecording = true;
                 document.getElementById("notifyButton").disabled = false;
                 document.getElementById("realTimeNotifyButton").disabled = false;
             }
@@ -118,13 +115,13 @@
                     method: 'POST',
                     headers: {
                         'content-type': 'application/x-www-form-urlencoded',
-                        'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb', // Replace with your actual API key
+                        'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb',
                         'X-RapidAPI-Host': 'twinword-lemmatizer1.p.rapidapi.com'
                     },
                     body: new URLSearchParams({ text: word })
                 });
                 const data = await response.json();
-                return data.lemma || word; // Default to the original word if no lemma is found
+                return data.lemma || word;
             }
 
             async function getWordFrequency(word) {
@@ -216,8 +213,9 @@
 
             function typeText() {
                 const textElement = document.getElementById('text');
-                const text = 'Ever been in a meeting or interview with a pompous old prig who thinks he invented the English language?We all know that guy. "Despite the epistemological quandaries presented by the dichotomy between constructivist ontology and positivist empiricism, the confluence of post-structuralist theories and quantum mechanics beckons scholars to reevaluate the hermeneutic frameworks that underpin our understanding of intersubjective reality." What did he say? You might have just lost the job because of a pretentious wannabe Brit. And whipping out your phone to Google a word mid-interview might not be the best idea, would it? Well, WordSense was created for these very situations. In what will eventually be ported to Apple Watch, WordSense will be able to define words in the moment, to your wrist, with a double tap of your fingers on Series 9 and Ultra 2 onwards. Sneak a peek at your wrist and save yourself from looking like a dum-dum: Welcome to WordSense.'; // Add the rest of your text here
+                const text = 'Ever been in a meeting or interview with a pompous old prig who thinks he invented the English language? We all know that guy...'; // Add your full dialog text here
                 let index = 0;
+                textElement.innerHTML = ''; // Clear existing text
 
                 function addCharacter() {
                     if (index < text.length) {
