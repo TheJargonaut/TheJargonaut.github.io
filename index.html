@@ -18,6 +18,8 @@
         <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
         <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
         <button id="showDialogButton">What's Jargonaut?</button>
+        <button id="clearButton" onclick="clearTranscriptionAndDefinitions()">Clear Alls</button>
+
     </div>
     <div id="sliderContainer">
     <input type="range" min="1" max="3" value="2" class="slider" id="myRange">
@@ -236,6 +238,14 @@ async function processBufferedWords() {
             document.getElementById("definition").appendChild(li);
         }
 
+        function clearTranscriptionAndDefinitions() {
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = "";
+            const definitionList = document.getElementById("definition");
+            definitionList.innerHTML = "";
+            definedWords.clear();
+}
+
         function capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
@@ -251,6 +261,7 @@ async function processBufferedWords() {
                 });
             }
         }
+        
 
         function toggleRealTimeNotifications() {
             realTimeNotify = !realTimeNotify;
