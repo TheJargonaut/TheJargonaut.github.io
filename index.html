@@ -19,14 +19,11 @@
         <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
         <button id="showDialogButton">What's Jargonaut?</button>
         <button id="clearButton" onclick="clearTranscriptionAndDefinitions()">Clear All</button>
-
     </div>
     <div id="sliderContainer">
     <input type="range" min="1" max="3" value="2" class="slider" id="myRange">
     </div>
 
-    </div>
-    
     <div id="dialogBox" class="hidden">
         <span id="closeButton" class="close-button">x</span>
         <div class="header">About Jargonaut</div>
@@ -54,10 +51,6 @@
         let wordBuffer = [];
 
         // Function definitions
-        function stripPunctuation(word) {
-            return word.toLowerCase().replace(/[\W_]+/g, "");
-        }
-
         function toggleTranscription() {
             const resultsDiv = document.getElementById('results');
             const isHidden = resultsDiv.style.display === 'none';
@@ -82,8 +75,7 @@
             const closeButton = document.getElementById('closeButton');
             const textElement = document.getElementById('text');
 
-            // Define the text to be typed
-            const text = 'Ever been in a meeting or interview with a pompous old prig who thinks he invented the English language? We all know that guy. "Despite the epistemological quandaries presented by the dichotomy between constructivist ontology and positivist empiricism, the confluence of post-structuralist theories and quantum mechanics beckons scholars to reevaluate the hermeneutic frameworks that underpin our understanding of intersubjective reality." What did he say? You might have just lost the job because of a pretentious wannabe Brit. And whipping out your phone to Google a word mid-interview might not be the best idea, would it? Well, Jargonaut was created for these very situations. In what will eventually be ported to Apple Watch, Jargonaut will be able to define words in the moment, to your wrist, with a double tap of your fingers on Series 9 and Ultra 2 onwards. Sneak a peek at your wrist and save yourself from looking like a dum-dum: Welcome to Jargonaut.';
+            const text = 'Ever been in a meeting or interview with a pompous old prig who thinks he invented the English language? We all know that guy...';
             let index = 0;
 
             showDialogButton.addEventListener('click', function () {
@@ -107,7 +99,6 @@
                 }
             }
         });
-
 
         async function startListening() {
             recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -134,76 +125,27 @@
             document.getElementById("realTimeNotifyButton").disabled = false;
         }
 
-async function processBufferedWords() {
-    while (wordBuffer.length > 0) {
-        const originalWord = wordBuffer.shift();
-        const cleanWord = stripPunctuation(originalWord);
+        async function processBufferedWords() {
+            while (wordBuffer.length > 0) {
+                const word = wordBuffer.shift();
 
-        if (!definedWords.has(cleanWord)) {
-            try {
-                // Fetch the root word using Words API
-                const rootWordData = await fetch(`https://twinword-lemmatizer1.p.rapidapi.com/extract/?text=${cleanWord}`, {
-                    method: 'GET',
-                    headers: {
-                        'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb',
-                        'X-RapidAPI-Host': 'twinword-lemmatizer1.p.rapidapi.com'
-                    }
-                });
-
-                if (rootWordData.status === 200) {
-                    const rootWordJSON = await rootWordData.json();
-                    const rootWord = rootWordJSON.lemma || cleanWord;
-
-                    // Fetch the Zipf value for the root word
-                    const frequencyData = await fetch(`https://wordsapiv1.p.rapidapi.com/words/${rootWord}/frequency`, {
-                        method: 'GET',
-                        headers: {
-                            'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb',
-                            'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
-                        }
-                    });
-
-                    if (frequencyData.status === 200) {
-                        const frequencyJSON = await frequencyData.json();
-                        const zipf = parseFloat(frequencyJSON.frequency?.zipf || 0);
-                        const perMillion = parseFloat(frequencyJSON.frequency?.perMillion || 0);
-
-
-                        if (zipf < 10 && perMillion <= 10) { // Change the threshold to 3
-                            // Root word is uncommon, display the original word's definition
-                            const definition = await fetchDefinition(cleanWord);
-                            if (definition) {
-                                definedWords.add(cleanWord);
-                                appendToResults(originalWord, true);
-                                appendToDefinitionList(cleanWord, definition);
-                                if (realTimeNotify) {
-                                    new Notification(originalWord, { body: definition });
-                                }
-                            } else {
-                                appendToResults(originalWord, false);
-                            }
-                        } else {
-                            appendToResults(originalWord, false);
+                if (!definedWords.has(word)) {
+                    const definition = await fetchDefinition(word);
+                    if (definition) {
+                        definedWords.add(word);
+                        appendToResults(word, true);
+                        appendToDefinitionList(word, definition);
+                        if (realTimeNotify) {
+                            new Notification(word, { body: definition });
                         }
                     } else {
-                        // Handle API error for fetching root word frequency data
-                        console.error('Error fetching root word frequency data');
-                        appendToResults(originalWord, false);
+                        appendToResults(word, false);
                     }
                 } else {
-                    // Handle API error for fetching root word
-                    console.error('Error fetching root word data');
-                    appendToResults(originalWord, false);
+                    appendToResults(word, false);
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                appendToResults(originalWord, false);
             }
-        } else {
-            appendToResults(originalWord, false);
         }
-    }
-}
 
         async function fetchDefinition(word) {
             const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${word}`);
@@ -215,22 +157,21 @@ async function processBufferedWords() {
             const resultsDiv = document.getElementById("results");
             resultsDiv.innerHTML += isUncommon ? `<span class="uncommon">${word}</span> ` : `${word} `;
         }
+
         document.addEventListener("DOMContentLoaded", function() {
             var slider = document.getElementById("myRange");
             var proficiencyLevels = ["Basic", "Proficient", "Scholar"];
             var currentProficiency = document.createElement("p");
             document.body.appendChild(currentProficiency);
 
-        function updateProficiency() {
-            currentProficiency.textContent = "Current Level: " + proficiencyLevels[slider.value - 1];
-            currentProficiency.style.textDecoration = "underline";
+            function updateProficiency() {
+                currentProficiency.textContent = "Current Level: " + proficiencyLevels[slider.value - 1];
+                currentProficiency.style.textDecoration = "underline";
+            }
 
-    }
-
-    slider.addEventListener("input", updateProficiency);
-    updateProficiency(); // Set initial value
-});
-
+            slider.addEventListener("input", updateProficiency);
+            updateProficiency(); // Set initial value
+        });
 
         function appendToDefinitionList(word, definition) {
             const li = document.createElement("li");
@@ -244,7 +185,7 @@ async function processBufferedWords() {
             const definitionList = document.getElementById("definition");
             definitionList.innerHTML = "";
             definedWords.clear();
-}
+        }
 
         function capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
@@ -261,7 +202,6 @@ async function processBufferedWords() {
                 });
             }
         }
-        
 
         function toggleRealTimeNotifications() {
             realTimeNotify = !realTimeNotify;
