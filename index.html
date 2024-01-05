@@ -18,7 +18,7 @@
         <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
         <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
         <button id="showDialogButton">What's Jargonaut?</button>
-        <button id="clearButton" onclick="clearTranscriptionAndDefinitions()">Clear Alls</button>
+        <button id="clearButton" onclick="clearTranscriptionAndDefinitions()">Clear All</button>
 
     </div>
     <div id="sliderContainer">
@@ -169,7 +169,7 @@ async function processBufferedWords() {
                         const perMillion = parseFloat(frequencyJSON.frequency?.perMillion || 0);
 
 
-                        if (zipf < 3 && perMillion <= 0.2) { // Change the threshold to 3
+                        if (zipf < 10 && perMillion <= 10) { // Change the threshold to 3
                             // Root word is uncommon, display the original word's definition
                             const definition = await fetchDefinition(cleanWord);
                             if (definition) {
