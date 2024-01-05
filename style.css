@@ -44,7 +44,7 @@ body {
     display: none;
 }
 
-#showDialogButton, #changeProficiencyBtn {
+#showDialogButton, #changeProficiencyBtn, #clearTranscription {
     color: #39FF14; /* Neon Green */
     background-color: black;
     border: 2px solid #39FF14; /* Neon Green border */
@@ -55,7 +55,7 @@ body {
     transition: transform 0.2s;
 }
 
-#showDialogButton:hover, #changeProficiencyBtn:hover {
+#showDialogButton:hover, #changeProficiencyBtn:hover, #clearTranscription:hover {
     transform: translateY(-5px);
 }
 
@@ -70,7 +70,7 @@ body {
     padding: 40px;
     background-color: #000000;
     z-index: 10;
-    opacity: 1;  
+    opacity: 1;
     border-radius: 20px;  /* rounded rectangle */
     transition: opacity 0.5s;
     font-family: 'Courier New', monospace;
@@ -82,6 +82,7 @@ body {
     right: 10px;
     cursor: pointer;
 }
+
 
 .header {
     font-weight: bold;
@@ -132,6 +133,7 @@ button {
     cursor: pointer;
     transition: transform 0.2s, opacity 0.5s;
 }
+
 #sliderContainer {
     position: fixed;
     left: 50%;
@@ -157,6 +159,7 @@ button {
 .slider:hover {
     opacity: 1;
 }
+
 #sliderContainer {
     display: flex;
     justify-content: space-between;
@@ -188,4 +191,25 @@ button:hover {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(1rem); }
     to   { opacity: 1; transform: translate(0); }
+}
+
+#clearTranscription {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--bg-color);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    font-family: 'Fira Code', monospace;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0;
+    animation: fadeIn 1s forwards 3.5s;
+}
+
+#clearTranscription:hover {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    transform: translateY(-5px);
 }
