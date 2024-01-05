@@ -4,30 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WordSense Corp.</title>
+    <title>Jargonaut Corp.</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <h1>WordSense</h1>
+    <h1>Jargonaut</h1>
 
     <div>
         <button id="recordingButton" onclick="toggleRecording()">🎙 Start Recording</button>
         <button id="notifyButton" onclick="sendNotification()" disabled>Notify</button>
         <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
         <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
-        <button id="showDialogButton">What's WordSense?</button>
+        <button id="showDialogButton">What's Jargonaut?</button>
     </div>
     <div id="sliderContainer">
-    <input type="range" min="1" max="5" value="3" class="slider" id="myRange">
+    <input type="range" min="1" max="3" value="2" class="slider" id="myRange">
     </div>
 
     </div>
     
     <div id="dialogBox" class="hidden">
         <span id="closeButton" class="close-button">x</span>
-        <div class="header">About WordSense</div>
+        <div class="header">About Jargonaut</div>
         <div class="body">
             <span id="text"></span><span class="cursor"></span>
         </div>
@@ -81,7 +81,7 @@
             const textElement = document.getElementById('text');
 
             // Define the text to be typed
-            const text = 'Ever been in a meeting or interview with a pompous old prig who thinks he invented the English language? We all know that guy. "Despite the epistemological quandaries presented by the dichotomy between constructivist ontology and positivist empiricism, the confluence of post-structuralist theories and quantum mechanics beckons scholars to reevaluate the hermeneutic frameworks that underpin our understanding of intersubjective reality." What did he say? You might have just lost the job because of a pretentious wannabe Brit. And whipping out your phone to Google a word mid-interview might not be the best idea, would it? Well, WordSense was created for these very situations. In what will eventually be ported to Apple Watch, WordSense will be able to define words in the moment, to your wrist, with a double tap of your fingers on Series 9 and Ultra 2 onwards. Sneak a peek at your wrist and save yourself from looking like a dum-dum: Welcome to WordSense.';
+            const text = 'Ever been in a meeting or interview with a pompous old prig who thinks he invented the English language? We all know that guy. "Despite the epistemological quandaries presented by the dichotomy between constructivist ontology and positivist empiricism, the confluence of post-structuralist theories and quantum mechanics beckons scholars to reevaluate the hermeneutic frameworks that underpin our understanding of intersubjective reality." What did he say? You might have just lost the job because of a pretentious wannabe Brit. And whipping out your phone to Google a word mid-interview might not be the best idea, would it? Well, Jargonaut was created for these very situations. In what will eventually be ported to Apple Watch, Jargonaut will be able to define words in the moment, to your wrist, with a double tap of your fingers on Series 9 and Ultra 2 onwards. Sneak a peek at your wrist and save yourself from looking like a dum-dum: Welcome to Jargonaut.';
             let index = 0;
 
             showDialogButton.addEventListener('click', function () {
@@ -164,8 +164,10 @@ async function processBufferedWords() {
                     if (frequencyData.status === 200) {
                         const frequencyJSON = await frequencyData.json();
                         const zipf = parseFloat(frequencyJSON.frequency?.zipf || 0);
+                        const perMillion = parseFloat(frequencyJSON.frequency?.perMillion || 0);
 
-                        if (zipf < 5) { // Change the threshold to 3
+
+                        if (zipf < 3 && perMillion <= 0.2) { // Change the threshold to 3
                             // Root word is uncommon, display the original word's definition
                             const definition = await fetchDefinition(cleanWord);
                             if (definition) {
@@ -213,12 +215,14 @@ async function processBufferedWords() {
         }
         document.addEventListener("DOMContentLoaded", function() {
             var slider = document.getElementById("myRange");
-            var proficiencyLevels = ["Basic", "Elementary", "Intermediate", "Advanced", "Expert", "Fluent", "Professional", "Master", "Scholar", "Shakespearean"];
+            var proficiencyLevels = ["Basic", "Proficient", "Scholar"];
             var currentProficiency = document.createElement("p");
             document.body.appendChild(currentProficiency);
 
         function updateProficiency() {
             currentProficiency.textContent = "Current Level: " + proficiencyLevels[slider.value - 1];
+            currentProficiency.style.textDecoration = "underline";
+
     }
 
     slider.addEventListener("input", updateProficiency);
