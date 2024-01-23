@@ -228,7 +228,7 @@
                 definedWords.forEach(word => {
                     fetchDefinition(word).then(definition => {
                         if (definition) {
-                            new Notification(capitalizeFirstLetter(word), { body: definition });
+                            new Notification(capitalizeFirstLetter(cleanWord), { body: definition });
                         }
                     });
                 });
