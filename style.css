@@ -214,21 +214,21 @@ button:hover {
     transform: translateY(-5px);
 }
 
-/* Style the toggle switch container */
+/* New Styles for Toggle Switch Container */
 .toggle-container {
     display: flex;
     align-items: center;
     margin-top: 20px;
-    position: absolute; /* Set to absolute positioning */
-    top: 0; /* Align to the top of the page */
-    left: 0; /* Align to the left of the page */
+    position: absolute;
+    top: 10px; /* Adjust the top position */
+    left: 10px; /* Adjust the left position */
 }
 
 /* Style the toggle switch label */
 .switch-label {
     font-family: 'Fira Code', monospace;
     color: var(--primary-color);
-    margin-left: 10px; /* Adjust the spacing between toggles */
+    margin-left: 10px;
 }
 
 /* Style the toggle switch */
@@ -237,7 +237,7 @@ button:hover {
     display: inline-block;
     width: 60px;
     height: 34px;
-    margin-left: 10px; /* Adjust the spacing between toggles */
+    margin-left: 10px;
 }
 
 .toggle-switch input {
@@ -275,7 +275,7 @@ button:hover {
 
 /* Toggle switch checked state */
 input:checked + .slider {
-    background-color: #00ff00; /* Change to your desired color */
+    background-color: #00ff00;
 }
 
 input:checked + .slider:before {
