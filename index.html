@@ -13,13 +13,19 @@
 
     <div>
         <button id="recordingButton" onclick="toggleRecording()">🎙 Start Recording</button>
-        <input type="checkbox" id="toggleSynonymsDefinitions">
-        <label for="toggleSynonymsDefinitions" class="switch-label">Toggle Synonyms/Definitions</label>
         <button id="notifyButton" onclick="sendNotification()" disabled>Notify</button>
         <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
         <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
         <button id="clearButton" onclick="clearTranscriptionAndDefinitions()">Clear All</button>
         <button id="showDialogButton">What's Jargonaut?</button>
+    </div>
+    <div class="toggle-container">
+        <label class="switch-label">Definitions</label>
+        <label class="toggle-switch">
+            <input type="checkbox" id="toggleDefinitionsSynonyms">
+            <span class="slider round"></span>
+        </label>
+        <label class="switch-label">Synonyms</label>
     </div>
 
     <div id="sliderContainer">
