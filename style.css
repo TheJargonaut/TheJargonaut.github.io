@@ -166,73 +166,6 @@ button {
     /* Other styles for your slider container */
 }
 
-/* Toggle switch container */
-.switch-container {
-    display: flex;
-    align-items: center;
-    margin-top: 20px;
-}
-
-/* Toggle switch label */
-.switch-label {
-    margin-left: 10px;
-    font-family: 'Fira Code', monospace;
-    color: var(--primary-color);
-}
-
-/* Style the toggle switch */
-.toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-}
-
-.toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-/* Style the slider */
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 34px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-/* Toggle switch checked state */
-input:checked + .slider {
-    background-color: #00ff00; /* Change to your desired color */
-}
-
-input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
-}
-
-
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -279,4 +212,76 @@ button:hover {
     background-color: var(--primary-color);
     color: var(--bg-color);
     transform: translateY(-5px);
+}
+
+/* Style the toggle switch container */
+.toggle-container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Style the toggle switch label */
+.switch-label {
+    font-family: 'Fira Code', monospace;
+    color: var(--primary-color);
+    margin-left: 10px; /* Adjust the spacing between toggles */
+}
+
+/* Style the toggle switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-left: 10px; /* Adjust the spacing between toggles */
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Style the slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+/* Toggle switch checked state */
+input:checked + .slider {
+    background-color: #00ff00; /* Change to your desired color */
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Adjust the switch position based on the checked state */
+input:checked + .slider.round {
+    transform: translateX(60px);
 }
