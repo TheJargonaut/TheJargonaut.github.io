@@ -219,6 +219,9 @@ button:hover {
     display: flex;
     align-items: center;
     margin-top: 20px;
+    position: absolute; /* Set to absolute positioning */
+    top: 0; /* Align to the top of the page */
+    left: 0; /* Align to the left of the page */
 }
 
 /* Style the toggle switch label */
