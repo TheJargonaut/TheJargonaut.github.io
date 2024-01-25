@@ -44,7 +44,9 @@ body {
     display: none;
 }
 
-#showDialogButton, #changeProficiencyBtn, #clearTranscription {
+#showDialogButton,
+#changeProficiencyBtn,
+#clearTranscription {
     color: #39FF14; /* Neon Green */
     background-color: black;
     border: 2px solid #39FF14; /* Neon Green border */
@@ -55,7 +57,9 @@ body {
     transition: transform 0.2s;
 }
 
-#showDialogButton:hover, #changeProficiencyBtn:hover, #clearTranscription:hover {
+#showDialogButton:hover,
+#changeProficiencyBtn:hover,
+#clearTranscription:hover {
     transform: translateY(-5px);
 }
 
@@ -71,7 +75,7 @@ body {
     background-color: #000000;
     z-index: 10;
     opacity: 1;
-    border-radius: 20px;  /* rounded rectangle */
+    border-radius: 20px; /* rounded rectangle */
     transition: opacity 0.5s;
     font-family: 'Courier New', monospace;
 }
@@ -82,7 +86,6 @@ body {
     right: 10px;
     cursor: pointer;
 }
-
 
 .header {
     font-weight: bold;
@@ -112,13 +115,21 @@ h1 {
 }
 
 @keyframes typing {
-    from { width: 0 }
-    to { width: 9ch }
+    from {
+        width: 0;
+    }
+    to {
+        width: 9ch;
+    }
 }
 
 @keyframes blink-caret {
-    from, to { border-color: transparent }
-    50% { border-color: var(--primary-color); }
+    from, to {
+        border-color: transparent;
+    }
+    50% {
+        border-color: var(--primary-color);
+    }
 }
 
 button {
@@ -189,8 +200,14 @@ button:hover {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(1rem); }
-    to   { opacity: 1; transform: translate(0); }
+    from {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
+    to {
+        opacity: 1;
+        transform: translate(0);
+    }
 }
 
 #clearTranscription {
@@ -284,14 +301,8 @@ input:checked + .slider:before {
     /* Use the translateX value that matches the track length minus the circle diameter */
 }
 
-
 input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
-}
-
-/* Adjust the switch position based on the checked state */
-input:checked + .slider.round {
-    transform: translateX(60px);
 }
