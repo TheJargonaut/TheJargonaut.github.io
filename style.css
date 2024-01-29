@@ -14,7 +14,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://wallpapercave.com/wp/wp4228882.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://giffiles.alphacoders.com/209/209037.gif');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -47,9 +47,9 @@ body {
 #showDialogButton,
 #changeProficiencyBtn,
 #clearTranscription {
-    color: #FFFFFF; 
+    color: #39FF14; /* Neon Green */
     background-color: black;
-    border: 2px solid #FFFFFF; 
+    border: 2px solid #39FF14; /* Neon Green border */
     font-family: 'Fira Code', monospace;
     padding: 10px 20px;
     margin-top: 20px;
@@ -171,6 +171,12 @@ button {
     opacity: 1;
 }
 
+#sliderContainer {
+    display: flex;
+    justify-content: space-between;
+    /* Other styles for your slider container */
+}
+
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -232,7 +238,7 @@ button:hover {
     margin-top: 20px;
     position: absolute;
     top: 10px; /* Adjust the top position */
-    right: 10px; /* Adjust the right position */
+    left: 10px; /* Adjust the left position */
 }
 
 /* Style the toggle switch label */
@@ -246,8 +252,8 @@ button:hover {
 .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 45px; /* Adjusted width to fit "Definitions" and "Synonyms" */
-    height: 20px; /* Adjusted height for better visibility */
+    width: 30px;
+    height: 17px;
     margin-left: 10px;
 }
 
@@ -269,17 +275,17 @@ button:hover {
     -webkit-transition: .4s;
     transition: .4s;
     border-radius: 34px;
-    width: 80px; /* Adjusted width for better visibility */
+    /* Ensure the track height is enough to fit the circle */
 }
 
 /* Style the circle inside the slider */
 .slider:before {
     position: absolute;
     content: "";
-    height: 16px; /* Adjusted height */
-    width: 16px;  /* Adjusted width */
-    left: 2px;    /* Adjusted position */
-    bottom: 2px;  /* Center circle vertically */
+    height: 26px; /* Circle height */
+    width: 26px;  /* Circle width */
+    left: 4px;    /* Circle initial position */
+    bottom: 4px;  /* Center circle vertically */
     background-color: white;
     -webkit-transition: .4s;
     transition: .4s;
@@ -289,15 +295,14 @@ button:hover {
 
 /* Adjust the circle position for the checked state */
 input:checked + .slider:before {
-    -webkit-transform: translateX(28px); /* Adjusted value */
-    -ms-transform: translateX(28px); /* Adjusted value */
-    transform: translateX(28px); /* Adjusted value */
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
     /* Use the translateX value that matches the track length minus the circle diameter */
 }
 
 input:checked + .slider:before {
-    -webkit-transform: translateX(28px); /* Adjusted value */
-    -ms-transform: translateX(28px); /* Adjusted value */
-    transform: translate(28px); /* Adjusted value */
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
 }
-
