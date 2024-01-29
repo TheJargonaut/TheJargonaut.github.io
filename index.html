@@ -142,50 +142,23 @@
                 const cleanWord = stripPunctuation(originalWord);
 
                 if (!definedWords.has(cleanWord)) {
-                    try {
-                        const frequencyData = await fetch(`https://wordsapiv1.p.rapidapi.com/words/${cleanWord}/frequency`, {
-                            method: 'GET',
-                            headers: {
-                                'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb',
-                                'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
-                            }
-                        });
+                    let result;
+                    if (isSynonymToggleEnabled) {
+                        // Fetch synonyms
+                        result = await fetchSynonym(cleanWord);
+                    } else {
+                        // Fetch definitions
+                        result = await fetchDefinition(cleanWord);
+                    }
 
-                        if (frequencyData.status === 200) {
-                            const frequencyJSON = await frequencyData.json();
-                            const zipf = parseFloat(frequencyJSON.frequency?.zipf || 0);
-                            const perMillion = parseFloat(frequencyJSON.frequency?.perMillion || 0);
-
-                            if (zipf < 3 && perMillion <= 0.4) {
-                                let result;
-                                if (isSynonymToggleEnabled) {
-                                    // Fetch synonyms
-                                    result = await fetchSynonym(cleanWord);
-                                } else {
-                                    // Fetch definitions
-                                    result = await fetchDefinition(cleanWord);
-                                }
-
-                                if (result) {
-                                    definedWords.add(cleanWord);
-                                    appendToResults(originalWord, true);
-                                    appendToDefinitionList(cleanWord, result);
-                                    if (realTimeNotify) {
-                                        new Notification(originalWord, { body: result });
-                                    }
-                                } else {
-                                    appendToResults(originalWord, false);
-                                }
-                            } else {
-                                appendToResults(originalWord, false);
-                            }
-                        } else {
-                            // Handle API error for fetching word frequency data
-                            console.error('Error fetching word frequency data');
-                            appendToResults(originalWord, false);
+                    if (result) {
+                        definedWords.add(cleanWord);
+                        appendToResults(originalWord, true);
+                        appendToDefinitionList(cleanWord, result);
+                        if (realTimeNotify) {
+                            new Notification(originalWord, { body: result });
                         }
-                    } catch (error) {
-                        console.error('Error:', error);
+                    } else {
                         appendToResults(originalWord, false);
                     }
                 } else {
@@ -279,10 +252,11 @@
         }
 
         let isSynonymToggleEnabled = false;
-        const toggleSwitch = document.getElementById('toggleSynonymsDefinitions');
+        const toggleSwitch = document.getElementById('toggleDefinitionsSynonyms');
         toggleSwitch.addEventListener('change', function () {
             isSynonymToggleEnabled = this.checked;
-            processBufferedWords();
+            clearTranscriptionAndDefinitions(); // Clear existing results since the mode is changing
+            // Optionally re-process buffered words or adjust UI accordingly
         });
 
         function toggleRealTimeNotifications() {
@@ -291,5 +265,4 @@
         }
     </script>
 </body>
-
 </html>
