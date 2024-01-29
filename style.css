@@ -1,6 +1,6 @@
 :root {
-    --primary-color: #FFFFFF;
-    --secondary-color: #000000;
+    --primary-color: #00FF00;
+    --secondary-color: #FFFFFF;
     --bg-color: #000000;
 }
 
@@ -44,9 +44,7 @@ body {
     display: none;
 }
 
-#showDialogButton,
-#changeProficiencyBtn,
-#clearTranscription {
+#showDialogButton, #changeProficiencyBtn, #clearTranscription {
     color: #39FF14; /* Neon Green */
     background-color: black;
     border: 2px solid #39FF14; /* Neon Green border */
@@ -57,9 +55,7 @@ body {
     transition: transform 0.2s;
 }
 
-#showDialogButton:hover,
-#changeProficiencyBtn:hover,
-#clearTranscription:hover {
+#showDialogButton:hover, #changeProficiencyBtn:hover, #clearTranscription:hover {
     transform: translateY(-5px);
 }
 
@@ -75,7 +71,7 @@ body {
     background-color: #000000;
     z-index: 10;
     opacity: 1;
-    border-radius: 20px; /* rounded rectangle */
+    border-radius: 20px;  /* rounded rectangle */
     transition: opacity 0.5s;
     font-family: 'Courier New', monospace;
 }
@@ -86,6 +82,7 @@ body {
     right: 10px;
     cursor: pointer;
 }
+
 
 .header {
     font-weight: bold;
@@ -115,21 +112,13 @@ h1 {
 }
 
 @keyframes typing {
-    from {
-        width: 0;
-    }
-    to {
-        width: 9ch;
-    }
+    from { width: 0 }
+    to { width: 9ch }
 }
 
 @keyframes blink-caret {
-    from, to {
-        border-color: transparent;
-    }
-    50% {
-        border-color: var(--primary-color);
-    }
+    from, to { border-color: transparent }
+    50% { border-color: var(--primary-color); }
 }
 
 button {
@@ -177,6 +166,73 @@ button {
     /* Other styles for your slider container */
 }
 
+/* Toggle switch container */
+.switch-container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Toggle switch label */
+.switch-label {
+    margin-left: 10px;
+    font-family: 'Fira Code', monospace;
+    color: var(--primary-color);
+}
+
+/* Style the toggle switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Style the slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+/* Toggle switch checked state */
+input:checked + .slider {
+    background-color: #00ff00; /* Change to your desired color */
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -200,14 +256,8 @@ button:hover {
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(1rem);
-    }
-    to {
-        opacity: 1;
-        transform: translate(0);
-    }
+    from { opacity: 0; transform: translateY(1rem); }
+    to   { opacity: 1; transform: translate(0); }
 }
 
 #clearTranscription {
@@ -229,80 +279,4 @@ button:hover {
     background-color: var(--primary-color);
     color: var(--bg-color);
     transform: translateY(-5px);
-}
-
-/* New Styles for Toggle Switch Container */
-.toggle-container {
-    display: flex;
-    align-items: center;
-    margin-top: 20px;
-    position: absolute;
-    top: 10px; /* Adjust the top position */
-    left: 10px; /* Adjust the left position */
-}
-
-/* Style the toggle switch label */
-.switch-label {
-    font-family: 'Fira Code', monospace;
-    color: var(--primary-color);
-    margin-left: 10px;
-}
-
-/* Style the toggle switch */
-.toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 30px;
-    height: 17px;
-    margin-left: 10px;
-}
-
-.toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-/* Style the slider (track) */
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 34px;
-    /* Ensure the track height is enough to fit the circle */
-}
-
-/* Style the circle inside the slider */
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 26px; /* Circle height */
-    width: 26px;  /* Circle width */
-    left: 4px;    /* Circle initial position */
-    bottom: 4px;  /* Center circle vertically */
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 50%;
-    /* Ensure the circle is vertically centered */
-}
-
-/* Adjust the circle position for the checked state */
-input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
-    /* Use the translateX value that matches the track length minus the circle diameter */
-}
-
-input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
 }
