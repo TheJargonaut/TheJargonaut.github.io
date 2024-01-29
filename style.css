@@ -284,7 +284,7 @@ button:hover {
     content: "";
     height: 12px; /* Circle height */
     width: 12px;  /* Circle width */
-    left: 2px;    /* Circle initial position */
+    left: 1px;    /* Circle initial position */
     bottom: 2px;  /* Center circle vertically */
     background-color: white;
     -webkit-transition: .4s;
@@ -295,9 +295,9 @@ button:hover {
 
 /* Adjust the circle position for the checked state */
 input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
+    -webkit-transform: translateX(2px);
+    -ms-transform: translateX(2px);
+    transform: translateX(2px);
     /* Use the translateX value that matches the track length minus the circle diameter */
 }
 
