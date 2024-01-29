@@ -1,6 +1,6 @@
 :root {
-    --primary-color: #00FF00;
-    --secondary-color: #FFFFFF;
+    --primary-color: #FFFFFF;
+    --secondary-color: #000000;
     --bg-color: #000000;
 }
 
@@ -14,7 +14,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://giffiles.alphacoders.com/209/209037.gif');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://wallpapercave.com/wp/wp4228882.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
