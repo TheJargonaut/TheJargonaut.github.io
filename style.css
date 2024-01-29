@@ -171,12 +171,6 @@ button {
     opacity: 1;
 }
 
-#sliderContainer {
-    display: flex;
-    justify-content: space-between;
-    /* Other styles for your slider container */
-}
-
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -238,7 +232,7 @@ button:hover {
     margin-top: 20px;
     position: absolute;
     top: 10px; /* Adjust the top position */
-    left: 10px; /* Adjust the left position */
+    right: 10px; /* Adjust the right position */
 }
 
 /* Style the toggle switch label */
@@ -252,8 +246,8 @@ button:hover {
 .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 15px;
-    height: 6px;
+    width: 45px; /* Adjusted width to fit "Definitions" and "Synonyms" */
+    height: 20px; /* Adjusted height for better visibility */
     margin-left: 10px;
 }
 
@@ -275,16 +269,16 @@ button:hover {
     -webkit-transition: .4s;
     transition: .4s;
     border-radius: 34px;
-    /* Ensure the track height is enough to fit the circle */
+    width: 80px; /* Adjusted width for better visibility */
 }
 
 /* Style the circle inside the slider */
 .slider:before {
     position: absolute;
     content: "";
-    height: 12px; /* Circle height */
-    width: 12px;  /* Circle width */
-    left: 1px;    /* Circle initial position */
+    height: 16px; /* Adjusted height */
+    width: 16px;  /* Adjusted width */
+    left: 2px;    /* Adjusted position */
     bottom: 2px;  /* Center circle vertically */
     background-color: white;
     -webkit-transition: .4s;
@@ -295,14 +289,15 @@ button:hover {
 
 /* Adjust the circle position for the checked state */
 input:checked + .slider:before {
-    -webkit-transform: translateX(2px);
-    -ms-transform: translateX(2px);
-    transform: translateX(2px);
+    -webkit-transform: translateX(28px); /* Adjusted value */
+    -ms-transform: translateX(28px); /* Adjusted value */
+    transform: translateX(28px); /* Adjusted value */
     /* Use the translateX value that matches the track length minus the circle diameter */
 }
 
 input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
+    -webkit-transform: translateX(28px); /* Adjusted value */
+    -ms-transform: translateX(28px); /* Adjusted value */
+    transform: translate(28px); /* Adjusted value */
 }
+
