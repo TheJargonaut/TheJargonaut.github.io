@@ -19,11 +19,11 @@
         <button id="clearButton" onclick="clearTranscriptionAndDefinitions()">Clear All</button>
         <button id="modeButton" onclick="toggleMode()">Current Mode: Definitions</button>
         <button id="showDialogButton">What's Jargonaut?</button>
-
     </div>
 
     <div id="sliderContainer">
         <input type="range" min="1" max="3" value="2" class="slider" id="myRange">
+        <p id="currentProficiency" style="text-decoration: underline;">Current Level: Proficient</p>
     </div>
 
     <div id="dialogBox" class="hidden">
@@ -44,14 +44,12 @@
             }
         });
 
-        // Initialize variables
         let recognition;
         let isRecording = false;
         let realTimeNotify = false;
         let lastWordTimestamp = 0;
         let definedWords = new Set();
         let wordBuffer = [];
-
         let isSynonymMode = false;
 
         function stripPunctuation(word) {
@@ -133,71 +131,30 @@
         }
 
         async function processBufferedWords() {
+            const slider = document.getElementById("myRange");
+            const proficiencyAdjustment = {1: 2, 2: 1, 3: 0.5}; // Basic: 2x, Proficient: 1x, Scholar: 0.5x
+
             while (wordBuffer.length > 0) {
                 const originalWord = wordBuffer.shift();
                 const cleanWord = stripPunctuation(originalWord);
 
                 if (!definedWords.has(cleanWord)) {
-                    try {
-                        const frequencyData = await fetch(`https://wordsapiv1.p.rapidapi.com/words/${cleanWord}/frequency`, {
-                            method: 'GET',
-                            headers: {
-                                'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb',
-                                'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
-                            }
-                        });
-
-                        if (frequencyData.status === 200) {
-                            const frequencyJSON = await frequencyData.json();
-                            let zipf = parseFloat(frequencyJSON.frequency?.zipf || 0);
-                            let perMillion = parseFloat(frequencyJSON.frequency?.perMillion || 0);
-
-                            // Adjust threshold and perMillion based on proficiency level
-                            const slider = document.getElementById("myRange");
-                            const proficiencyLevels = ["Basic", "Proficient", "Scholar"];
-                            const selectedProficiency = proficiencyLevels[slider.value - 1];
-
-                            if (selectedProficiency === "Scholar") {
-                                // Lower threshold and perMillion for Scholar proficiency
-                                zipf *= 0.5;
-                                perMillion *= 0.5;
-                            } else if (selectedProficiency === "Basic") {
-                                // Raise threshold and perMillion for Basic proficiency
-                                zipf *= 2;
-                                perMillion *= 2;
-                            }
-
-                            if (zipf < 3 && perMillion <= 0.4) {
-                                let result;
-                                if (isSynonymMode) {
-                                    // Fetch synonyms
-                                    result = await fetchSynonym(cleanWord);
-                                } else {
-                                    // Fetch definitions
-                                    result = await fetchDefinition(cleanWord);
-                                }
-
-                                if (result) {
-                                    definedWords.add(cleanWord);
-                                    appendToResults(originalWord, true);
-                                    appendToDefinitionList(cleanWord, result);
-                                    if (realTimeNotify) {
-                                        new Notification(cleanWord, { body: result });
-                                    }
-                                } else {
-                                    appendToResults(cleanWord, false);
-                                }
-                            } else {
-                                appendToResults(cleanWord, false);
+                    const adjustmentFactor = proficiencyAdjustment[slider.value];
+                    let isUncommon = checkWordUncommon(cleanWord, adjustmentFactor);
+                    if (isUncommon) {
+                        let result = isSynonymMode ? await fetchSynonym(cleanWord) : await fetchDefinition(cleanWord);
+                        if (result) {
+                            definedWords.add(cleanWord);
+                            appendToResults(originalWord, true);
+                            appendToDefinitionList(cleanWord, result);
+                            if (realTimeNotify) {
+                                new Notification(cleanWord, { body: result });
                             }
                         } else {
-                            // Handle API error for fetching word frequency data
-                            console.error('Error fetching word frequency data');
-                            appendToResults(originalWord, false);
+                            appendToResults(cleanWord, false);
                         }
-                    } catch (error) {
-                        console.error('Error:', error);
-                        appendToResults(originalWord, false);
+                    } else {
+                        appendToResults(cleanWord, false);
                     }
                 } else {
                     appendToResults(originalWord, false);
@@ -205,14 +162,42 @@
             }
         }
 
+        async function checkWordUncommon(word, adjustmentFactor) {
+            try {
+                const frequencyData = await fetch(`https://wordsapiv1.p.rapidapi.com/words/${word}/frequency`, {
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': 'e7d53037c6mshc2f7dbdae749571p103023jsneceda3961ddb',
+                        'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
+                    }
+                });
+
+                if (frequencyData.status === 200) {
+                    const frequencyJSON = await frequencyData.json();
+                    let zipf = parseFloat(frequencyJSON.frequency?.zipf || 0) * adjustmentFactor;
+                    let perMillion = parseFloat(frequencyJSON.frequency?.perMillion || 0) * adjustmentFactor;
+                    return zipf < 3 && perMillion <= 0.4;
+                } else {
+                    console.error('Error fetching word frequency data');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            }
+        }
+
         async function fetchDefinition(word) {
             const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${word}`);
-            const data = await response.json();
-            return data[0]?.meanings[0]?.definitions[0]?.definition || null;
+            if (response.ok) {
+                const data = await response.json();
+                return data[0]?.meanings[0]?.definitions[0]?.definition || null;
+            }
+            return null;
         }
 
         async function fetchSynonym(word) {
-            const apiKey = 'Xifjnftxx1cWkMsbQk6R6A==NAGVxHEQEV1eRiwK';
+            const apiKey = 'YXifjnftxx1cWkMsbQk6R6A==NAGVxHEQEV1eRiwK';
             const apiUrl = `https://api.api-ninjas.com/v1/thesaurus?word=${word}`;
             
             try {
@@ -224,16 +209,11 @@
                     },
                 });
 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.synonyms && data.synonyms.length > 0 ? data.synonyms.slice(0, 3).join(', ') : 'No synonyms found.';
                 }
-
-                const data = await response.json();
-                if (data.synonyms && data.synonyms.length > 0) {
-                    return data.synonyms.slice(0, 3).join(', ');
-                } else {
-                    return 'No synonyms found for the word.';
-                }
+                return 'No synonyms found.';
             } catch (error) {
                 console.error('Error:', error);
                 return null;
@@ -248,17 +228,12 @@
         document.addEventListener("DOMContentLoaded", function () {
             var slider = document.getElementById("myRange");
             var proficiencyLevels = ["Basic", "Proficient", "Scholar"];
-            var currentProficiency = document.createElement("p");
-            document.body.appendChild(currentProficiency);
+            var currentProficiency = document.getElementById("currentProficiency");
 
-            function updateProficiency() {
+            slider.addEventListener("input", function () {
                 const selectedProficiency = proficiencyLevels[slider.value - 1];
                 currentProficiency.textContent = "Current Level: " + selectedProficiency;
-                currentProficiency.style.textDecoration = "underline";
-            }
-
-            slider.addEventListener("input", updateProficiency);
-            updateProficiency(); // Set initial value
+            });
         });
 
         function appendToDefinitionList(word, definition) {
@@ -268,22 +243,14 @@
         }
 
         function clearTranscriptionAndDefinitions() {
-            const resultsDiv = document.getElementById("results");
-            resultsDiv.innerHTML = "";
-            const definitionList = document.getElementById("definition");
-            definitionList.innerHTML = "";
+            document.getElementById("results").innerHTML = "";
+            document.getElementById("definition").innerHTML = "";
             definedWords.clear();
         }
 
         function toggleMode() {
             isSynonymMode = !isSynonymMode;
-            const modeButton = document.getElementById("modeButton");
-
-            if (isSynonymMode) {
-                modeButton.textContent = "Current Mode: Synonyms";
-            } else {
-                modeButton.textContent = "Current Mode: Definitions";
-            }
+            document.getElementById("modeButton").textContent = isSynonymMode ? "Current Mode: Synonyms" : "Current Mode: Definitions";
         }
 
         function toggleRealTimeNotifications() {
