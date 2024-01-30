@@ -17,12 +17,10 @@
         <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
         <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
         <button id="clearButton" onclick="clearTranscriptionAndDefinitions()">Clear All</button>
-        <input type="checkbox" id="toggleSynonymsDefinitions">
-        <label for="toggleSynonymsDefinitions" id="modeLabel" class="switch-label"> Current Mode: Definitions</label>
+        <button id="modeButton" onclick="toggleMode()">Current Mode: Definitions</button>
         <button id="showDialogButton">What's Jargonaut?</button>
-
     </div>
-
+    
     <div id="sliderContainer">
         <input type="range" min="1" max="3" value="2" class="slider" id="myRange">
     </div>
@@ -286,12 +284,19 @@
             }
         }
 
-        let isSynonymToggleEnabled = false;
-        const toggleSwitch = document.getElementById('toggleSynonymsDefinitions');
-        toggleSwitch.addEventListener('change', function () {
-            isSynonymToggleEnabled = this.checked;
-            processBufferedWords();
-        });
+        let isSynonymsMode = false;
+        
+        function toggleMode() {
+          isSynonymsMode = !isSynonymsMode;
+          const modeButton = document.getElementById("modeButton");
+          
+          if (isSynonymsMode) {
+            modeButton.textContent = "Current Mode: Synonyms";
+          } else {
+            modeButton.textContent = "Current Mode: Definitions";
+          }
+        }
+
 
         function toggleRealTimeNotifications() {
             realTimeNotify = !realTimeNotify;
