@@ -157,25 +157,15 @@
                             const proficiencyLevels = ["Basic", "Proficient", "Scholar"];
                             const selectedProficiency = proficiencyLevels[slider.value - 1];
 
-                         if (selectedProficiency === "Scholar") {
-                                if (zipf < 2 && perMillion <= 0.2) {
-                                    let result;
-                                    if (isSynonymMode) {
-                                        // Fetch synonyms
-                                        result = await fetchSynonym(cleanWord);
-                                    } else {
-                                        // Fetch definitions
-                                        result = await fetchDefinition(cleanWord);;
-                                } else if (selectedProficiency === "Basic") {
-                                    if (zipf < 4.3 && perMillion <= 3) {
-                                        let result;
-                                        if (isSynonymMode) {
-                                            // Fetch synonyms
-                                            result = await fetchSynonym(cleanWord);
-                                        } else {
-                                            // Fetch definitions
-                                            result = await fetchDefinition(cleanWord);
-                                        }
+                            if (selectedProficiency === "Scholar") {
+                                // Lower threshold and perMillion for Scholar proficiency
+                                zipf *= 0.5;
+                                perMillion *= 0.5;
+                            } else if (selectedProficiency === "Basic") {
+                                // Raise threshold and perMillion for Basic proficiency
+                                zipf *= 2;
+                                perMillion *= 2;
+                            }
 
                             if (zipf < 3 && perMillion <= 0.4) {
                                 let result;
