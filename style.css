@@ -169,8 +169,8 @@ button {
 /* Toggle switch container */
 .switch-container {
     display: flex;
-    align-items: center;
-    margin-top: 20px;
+    align-items: left;
+    margin-top: 3px;
 }
 
 /* Toggle switch label */
