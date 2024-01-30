@@ -13,13 +13,14 @@
 
     <div>
         <button id="recordingButton" onclick="toggleRecording()">🎙 Start Recording</button>
-        <input type="checkbox" id="toggleSynonymsDefinitions">
-        <label for="toggleSynonymsDefinitions" class="switch-label">Toggle Synonyms</label>
         <button id="notifyButton" onclick="sendNotification()" disabled>Notify</button>
         <button id="toggleTranscription" onclick="toggleTranscription()">Show Transcription</button>
         <button id="realTimeNotifyButton" onclick="toggleRealTimeNotifications()" disabled>Real-time Notify</button>
         <button id="clearButton" onclick="clearTranscriptionAndDefinitions()">Clear All</button>
+        <input type="checkbox" id="toggleSynonymsDefinitions">
+        <label for="toggleSynonymsDefinitions" id="modeLabel" class="switch-label"> Current Mode: Definitions</label>
         <button id="showDialogButton">What's Jargonaut?</button>
+
     </div>
 
     <div id="sliderContainer">
@@ -165,13 +166,13 @@
                                     appendToResults(originalWord, true);
                                     appendToDefinitionList(cleanWord, result);
                                     if (realTimeNotify) {
-                                        new Notification(originalWord, { body: result });
+                                        new Notification(cleanWord, { body: result });
                                     }
                                 } else {
-                                    appendToResults(originalWord, false);
+                                    appendToResults(cleanWord, false);
                                 }
                             } else {
-                                appendToResults(originalWord, false);
+                                appendToResults(cleanWord, false);
                             }
                         } else {
                             // Handle API error for fetching word frequency data
@@ -256,6 +257,19 @@
             definitionList.innerHTML = "";
             definedWords.clear();
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+              const checkbox = document.getElementById("toggleSynonymsDefinitions");
+              const label = document.getElementById("modeLabel");
+            
+              checkbox.addEventListener("change", function() {
+                if (checkbox.checked) {
+                  label.textContent = "Current Mode: Synonyms";
+                } else {
+                  label.textContent = "Current Mode: Definitions";
+                }
+              });
+            });
 
         function capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
