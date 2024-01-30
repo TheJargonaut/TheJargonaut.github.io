@@ -19,7 +19,6 @@
         <button id="clearButton" onclick="clearTranscriptionAndDefinitions()">Clear All</button>
         <button id="modeButton" onclick="toggleMode()">Current Mode: Definitions</button>
         <button id="showDialogButton">What's Jargonaut?</button>
-
     </div>
 
     <div id="sliderContainer">
@@ -51,8 +50,6 @@
         let lastWordTimestamp = 0;
         let definedWords = new Set();
         let wordBuffer = [];
-
-        let isSynonymMode = false;
 
         function stripPunctuation(word) {
             return word.toLowerCase().replace(/[.,?!\s]/g, "");
@@ -157,17 +154,18 @@
                             const proficiencyLevels = ["Basic", "Proficient", "Scholar"];
                             const selectedProficiency = proficiencyLevels[slider.value - 1];
 
+                            let zipfThreshold;
+                            let perMillionThreshold;
+
                             if (selectedProficiency === "Scholar") {
-                                // Lower threshold and perMillion for Scholar proficiency
-                                zipf *= 0.5;
-                                perMillion *= 0.5;
+                                zipfThreshold = 2;
+                                perMillionThreshold = 0.2;
                             } else if (selectedProficiency === "Basic") {
-                                // Raise threshold and perMillion for Basic proficiency
-                                zipf *= 2;
-                                perMillion *= 2;
+                                zipfThreshold = 4.3;
+                                perMillionThreshold = 3;
                             }
 
-                            if (zipf < 3 && perMillion <= 0.4) {
+                            if (zipf < zipfThreshold && perMillion <= perMillionThreshold) {
                                 let result;
                                 if (isSynonymMode) {
                                     // Fetch synonyms
@@ -214,7 +212,7 @@
         async function fetchSynonym(word) {
             const apiKey = 'Xifjnftxx1cWkMsbQk6R6A==NAGVxHEQEV1eRiwK';
             const apiUrl = `https://api.api-ninjas.com/v1/thesaurus?word=${word}`;
-            
+
             try {
                 const response = await fetch(apiUrl, {
                     method: 'GET',
@@ -252,8 +250,7 @@
             document.body.appendChild(currentProficiency);
 
             function updateProficiency() {
-                const selectedProficiency = proficiencyLevels[slider.value - 1];
-                currentProficiency.textContent = "Current Level: " + selectedProficiency;
+                currentProficiency.textContent = "Current Level: " + proficiencyLevels[slider.value - 1];
                 currentProficiency.style.textDecoration = "underline";
             }
 
@@ -275,6 +272,23 @@
             definedWords.clear();
         }
 
+        document.addEventListener("DOMContentLoaded", function () {
+            const checkbox = document.getElementById("toggleSynonymsDefinitions");
+            const label = document.getElementById("modeLabel");
+
+            checkbox.addEventListener("change", function () {
+                if (checkbox.checked) {
+                    label.textContent = "Current Mode: Synonyms";
+                    isSynonymMode = true;
+                } else {
+                    label.textContent = "Current Mode: Definitions";
+                    isSynonymMode = false;
+                }
+            });
+        });
+
+        let isSynonymMode = false;
+
         function toggleMode() {
             isSynonymMode = !isSynonymMode;
             const modeButton = document.getElementById("modeButton");
@@ -289,21 +303,6 @@
         function toggleRealTimeNotifications() {
             realTimeNotify = !realTimeNotify;
             document.getElementById("realTimeNotifyButton").textContent = realTimeNotify ? 'Disable Real-time Notify' : 'Enable Real-time Notify';
-        }
-
-        function capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        async function sendNotification() {
-            if (Date.now() - lastWordTimestamp <= 10000) {
-                definedWords.forEach(async (word) => {
-                    const definition = await fetchDefinition(word);
-                    if (definition) {
-                        new Notification(capitalizeFirstLetter(word), { body: definition });
-                    }
-                });
-            }
         }
     </script>
 </body>
